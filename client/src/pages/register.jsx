@@ -2,20 +2,22 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiFillEye } from "react-icons/ai";
 import { useMutation } from "react-query";
-import { Link, useNavigate } from "react-router-dom";
-import { authUser } from "../api/auth";
-import { useAuth } from "../store/auth";
-import { shallow } from "zustand/shallow";
+import { Link } from "react-router-dom";
+import { authUser, registerUser } from "../api/auth";
 
-export default function Login() {
+export default function Register() {
   return (
     <>
       <div className="body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0">
         <Header />
         <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
           <section>
-            <h3 className="font-bold text-2xl">Bienvenido de vuelta 👋</h3>
-            <p className="text-gray-600 pt-2">Inicia sesion en tu cuenta</p>
+            <h3 className="font-bold text-2xl">
+              Bienvenido a nuestro sistema 👋
+            </h3>
+            <p className="text-gray-600 pt-2">
+              Crea una cuenta en nuestro sistema
+            </p>
           </section>
 
           <section className="mt-10">
@@ -43,24 +45,18 @@ const Header = () => {
 
 const Form = () => {
   const [hidePassword, toggleHide] = useState(false);
+
   const [error, setError] = useState(false);
-
-  const setUser = useAuth((state) => state.setUser, shallow);
-
-  const navigate = useNavigate();
+  const [success, setSuccess] = useState(false);
+  const [oneTry, setTry] = useState(true);
 
   const { register, handleSubmit } = useForm();
 
-  const { mutate } = useMutation(authUser, {
-    onSuccess: (data) => {
-      //Guaradar en localstorage token
-      localStorage.setItem("token", data.token);
-
-      setUser(data);
-
-      navigate("/home");
+  const { mutate } = useMutation(registerUser, {
+    onSuccess: () => {
+      setTry(false);
+      setSuccess(true);
     },
-
     onError: () => {
       setError(true);
     },
@@ -69,7 +65,9 @@ const Form = () => {
   //Submit
   const successSubmit = (data) => {
     setError(false);
-    mutate(data);
+    if (oneTry) {
+      mutate(data);
+    }
   };
 
   const togglePasswordText = () => {
@@ -83,12 +81,33 @@ const Form = () => {
   return (
     <>
       <form onSubmit={handleSubmit(successSubmit)} className="flex flex-col">
+        {/*Alerta de error */}
         {error && (
           <div className="p-2 bg-red-600 text-white font-bold mb-5 rounded">
             <p>El email o contraseña es incorrecto!</p>
           </div>
         )}
 
+        {/*Alerta de exito */}
+        {success && (
+          <div className="p-2 bg-green-600 text-white font-bold mb-5 rounded">
+            <p>Usuario creado correctamente!</p>
+          </div>
+        )}
+
+        <div className="mb-6 pt-3 rounded bg-gray-200">
+          <label className="block text-gray-700 text-sm font-bold mb-2 ml-3">
+            Nombre
+          </label>
+          <input
+            {...register("nombre", {
+              required: true,
+            })}
+            type="text"
+            id="nombre"
+            className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+          />
+        </div>
         <div className="mb-6 pt-3 rounded bg-gray-200">
           <label className="block text-gray-700 text-sm font-bold mb-2 ml-3">
             Email
@@ -101,6 +120,32 @@ const Form = () => {
             })}
             type="email"
             id="email"
+            className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+          />
+        </div>
+        <div className="mb-6 pt-3 rounded bg-gray-200">
+          <label className="block text-gray-700 text-sm font-bold mb-2 ml-3">
+            Direccion
+          </label>
+          <input
+            {...register("direccion", {
+              required: true,
+            })}
+            type="text"
+            id="direccion"
+            className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
+          />
+        </div>
+        <div className="mb-6 pt-3 rounded bg-gray-200">
+          <label className="block text-gray-700 text-sm font-bold mb-2 ml-3">
+            Telefono
+          </label>
+          <input
+            {...register("telefono", {
+              required: true,
+            })}
+            type="number"
+            id="telefono"
             className="bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3"
           />
         </div>
@@ -127,10 +172,10 @@ const Form = () => {
           className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200"
           type="submit"
         >
-          Iniciar sesion
+          Registrarse
         </button>
-        <Link className="mt-6 underline text-gray-500" to={"/registro"}>
-          No tienes cuenta? Haz click aqui
+        <Link className="mt-6 underline text-gray-500" to={"/"}>
+          Ya tenes una cuenta? Haz click aqui
         </Link>
       </form>
     </>
