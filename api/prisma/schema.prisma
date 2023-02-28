@@ -1,3 +1,6 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,11 +10,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model Dueno {
   id        Int    @id @default(autoincrement())
-  nombre    String
-  direccion String
   email     String
+  nombre    String
   password  String
   telefono  String
+  direccion String
+  mascotas Mascota[]
+}
+
+model Mascota {
+  id      Int     @id @default(autoincrement())
+  nombre  String
+  especie String
+  raza    String
+  genero  Boolean
+  edad    String
+  id_dueno Int
+  dueno Dueno @relation(fields: [id_dueno], references: [id])
 }

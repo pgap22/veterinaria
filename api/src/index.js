@@ -1,17 +1,25 @@
 import express from "express";
-import rutasUsuarios from "./routes/userRoutes.js";
-import cors from "cors"
+import rutasUsuario from "./rutas/usuarioRutas.js";
+import rutasMascotas from "./rutas/mascotasRutas.js"
+import dotenv from "dotenv"
+dotenv.config();
 
-const app = express();
+const app = express()
 
-//Configuraciones
-app.use(express.json())
-app.use(cors());
-
-//Rutas
-app.use("/api/usuarios", rutasUsuarios)
+//Configuracion JSON
+app.use(express.json());
 
 
-app.listen("4000", ()=>{
-    console.log("Servidor Ready !")
+app.get("/",(req,res)=>{
+    
+    res.send("Servidor API Veterinaria");
+})
+
+//Rutas de la API
+app.use("/api/usuarios",rutasUsuario)
+app.use("/api/mascotas",rutasMascotas)
+
+
+app.listen(8080,()=>{
+    console.log("Servidor Activo !")
 })
