@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,23 +7,98 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Dueno {
-  id        Int    @id @default(autoincrement())
-  email     String
-  nombre    String
-  password  String
-  telefono  String
-  direccion String
-  mascotas Mascota[]
+model cita {
+  id            Int           @id @default(autoincrement())
+  estado        String
+  fecha         DateTime?
+  motivo        String
+
+  idVeterinario Int?
+  idMascota     Int
+  idSecretaria  Int?
+  idDueno       Int
+  
+  mascota       mascota       @relation(fields: [idMascota], references: [id], map: "Cita_idMascota_fkey")
+  secretaria    secretaria?   @relation(fields: [idSecretaria], references: [id], map: "Cita_idSecretaria_fkey")
+  veterinario   veterinario?  @relation(fields: [idVeterinario], references: [id], map: "Cita_idVeterinario_fkey")
+  dueno         dueno         @relation(fields: [idDueno], references: [id])
+  diagnostico   diagnostico[]
+  pago          pago?
+
+  @@index([idMascota], map: "Cita_idMascota_fkey")
+  @@index([idSecretaria], map: "Cita_idSecretaria_fkey")
+  @@index([idVeterinario], map: "Cita_idVeterinario_fkey")
+  @@index([idDueno], map: "cita_idDueno_fkey")
 }
 
-model Mascota {
-  id      Int     @id @default(autoincrement())
-  nombre  String
-  especie String
-  raza    String
-  genero  Boolean
-  edad    String
+model diagnostico {
+  id              Int         @id @default(autoincrement())
+  fecha           DateTime
+  descripcion     String
+  recomendaciones String
+  idCita          Int
+  idVeterinario   Int
+  cita            cita        @relation(fields: [idCita], references: [id], map: "Diagnostico_idCita_fkey")
+  veterinario     veterinario @relation(fields: [idVeterinario], references: [id], map: "Diagnostico_idVeterinario_fkey")
+
+  @@index([idCita], map: "Diagnostico_idCita_fkey")
+  @@index([idVeterinario], map: "Diagnostico_idVeterinario_fkey")
+}
+
+model dueno {
+  id        Int       @id @default(autoincrement())
+  direccion String
+  email     String
+  password  String
+  telefono  String
+  nombre    String
+  cita      cita[]
+  mascota   mascota[]
+  pago      pago[]
+}
+
+model mascota {
+  id       Int     @id @default(autoincrement())
+  nombre   String
+  especie  String
+  raza     String
+  genero   Boolean
+  edad     String
   id_dueno Int
-  dueno Dueno @relation(fields: [id_dueno], references: [id])
+  cita     cita[]
+  dueno    dueno   @relation(fields: [id_dueno], references: [id], map: "Mascota_id_dueno_fkey")
+
+  @@index([id_dueno], map: "Mascota_id_dueno_fkey")
+}
+
+model pago {
+  id         Int      @id @default(autoincrement())
+  metodoPago String
+  fechaPago  DateTime
+  monto      Float
+  idDueno    Int
+  idCita     Int      @unique(map: "Pago_idCita_key")
+  cita       cita     @relation(fields: [idCita], references: [id], map: "Pago_idCita_fkey")
+  dueno      dueno    @relation(fields: [idDueno], references: [id], map: "Pago_idDueno_fkey")
+
+  @@index([idDueno], map: "Pago_idDueno_fkey")
+}
+
+model secretaria {
+  id       Int    @id @default(autoincrement())
+  nombre   String
+  email    String
+  password String
+  cita     cita[]
+}
+
+model veterinario {
+  id           Int           @id @default(autoincrement())
+  email        String
+  nombre       String
+  password     String
+  especialidad String
+  telefono     String
+  cita         cita[]
+  diagnostico  diagnostico[]
 }

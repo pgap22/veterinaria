@@ -64,12 +64,31 @@ const buscarUsuarioPorCredenciales = async (req, res) => {
     const credenciales = credencialesModelo.parse(req.body);
 
     //Buscando usuario con las credenciales
-    const usuarioEncontrado = await prisma.dueno.findFirst({
+    let usuarioEncontrado = await prisma.dueno.findFirst({
       where: {
         email: credenciales.email,
         password: credenciales.password,
       },
     });
+
+    //Buscando en la tabla secretaria
+    if (!usuarioEncontrado) {
+      usuarioEncontrado = await prisma.secretaria.findFirst({
+        where: {
+          email: credenciales.email,
+          password: credenciales.password,
+        },
+      });
+    }
+    //Buscando en la tabla veterinario
+    if (!usuarioEncontrado) {
+      usuarioEncontrado = await prisma.veterinario.findFirst({
+        where: {
+          email: credenciales.email,
+          password: credenciales.password,
+        },
+      });
+    }
 
     if (!usuarioEncontrado) {
       return res.status(400).json({
@@ -78,16 +97,20 @@ const buscarUsuarioPorCredenciales = async (req, res) => {
     }
 
     //Crear token encriptado
+
+    //Antes solo usabamos id, pero ahora agregue el email
+    //para la autentificacion del secretario y veterinario
     const token = jwt.sign(
       {
         id: usuarioEncontrado.id,
+        email: usuarioEncontrado.email,
       },
       process.env.JWT_SECRET
     );
 
     return res.status(200).json({
       ...usuarioEncontrado,
-      token
+      token,
     });
   } catch (error) {
     //Es un error de una validacion
