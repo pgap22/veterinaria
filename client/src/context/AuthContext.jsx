@@ -1,40 +1,37 @@
-import { createContext, useEffect } from "react";
-import { shallow } from "zustand/shallow";
-import { getUser } from "../api/auth";
-import { useAuth } from "../store/auth";
+import { createContext, useEffect } from 'react'
+import { shallow } from 'zustand/shallow'
+import { getUser } from '../api/auth'
+import { useAuth } from '../store/auth'
 
-const AuthContext = createContext();
+const AuthContext = createContext()
 
 const AuthProvider = ({ children }) => {
-  const setUser = useAuth((state) => state.setUser, shallow);
-  const setLoading = useAuth((state) => state.setLoading, shallow);
+  const setUser = useAuth((state) => state.setUser, shallow)
+  const setLoading = useAuth((state) => state.setLoading, shallow)
 
   useEffect(() => {
-    
     const loadUser = async () => {
       //
-      setLoading(true);
+      setLoading(true)
 
-      //Si el token no existe no hacer ninguna peticion y quedar con el state vacio
-      if (!localStorage.getItem("token")) {
-        
-        setLoading(false);
-        setUser({});
+      // Si el token no existe no hacer ninguna peticion y quedar con el state vacio
+      if (!window.localStorage.getItem('token')) {
+        setLoading(false)
+        setUser({})
 
-        return;
+        return
       }
-      
-      const userData = await getUser();
-      
-      setUser(userData);
-      setLoading(false);
 
-    };
+      const userData = await getUser()
 
-    loadUser();
-  });
+      setUser(userData)
+      setLoading(false)
+    }
 
-  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>;
-};
+    loadUser()
+  }, [])
 
-export { AuthProvider };
+  return <AuthContext.Provider value={{}}>{children}</AuthContext.Provider>
+}
+
+export { AuthProvider }

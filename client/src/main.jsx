@@ -1,45 +1,80 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./index.css";
-import Login from "./pages/login";
-import { QueryClient, QueryClientProvider } from "react-query";
-import Register from "./pages/register";
-import ProtectedRoute from "./layouts/ProtectedRoute";
-import Home from "./pages/home";
-import UnProtectedRoute from "./layouts/UnprotectedRoute";
-import { AuthProvider } from "./context/AuthContext";
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
-const queryClient = new QueryClient();
+import './index.css'
+import Login from './pages/login'
+import HeaderClient from './components/HeaderClient'
+import Register from './pages/register'
+import { Home } from './pages/home'
+import { CitasContainer } from './components/Citas'
+import Index from './pages'
+import { PetsContainer } from './components/Pets'
+
+import { QueryClient, QueryClientProvider } from 'react-query'
+
+// import ProtectedRoute from './layouts/ProtectedRoute'
+import UnProtectedRoute from './layouts/UnprotectedRoute'
+
+import { AuthProvider } from './context/AuthContext'
+
+const queryClient = new QueryClient()
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/login',
     element: (
       <UnProtectedRoute>
         <Login />
       </UnProtectedRoute>
-    ),
+    )
   },
   {
-    path: "/registro",
+    path: '/register',
     element: (
       <UnProtectedRoute>
         <Register />
       </UnProtectedRoute>
-    ),
+    )
   },
   {
-    path: "/home",
+    path: '/',
     element: (
-      <ProtectedRoute>
-        <Home />
-      </ProtectedRoute>
-    ),
+      <>
+        <Index />
+      </>
+    )
   },
-]);
+  {
+    path: '/home',
+    element: (
+      <>
+        <HeaderClient />
+        <Home />
+      </>
+    )
+  },
+  {
+    path: '/pets',
+    element: (
+      <>
+        <HeaderClient />
+        <PetsContainer />
+      </>
+    )
+  },
+  {
+    path: '/appointments',
+    element: (
+      <>
+        <HeaderClient />
+        <CitasContainer />
+      </>
+    )
+  }
+])
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
@@ -47,4 +82,4 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       </QueryClientProvider>
     </AuthProvider>
   </React.StrictMode>
-);
+)
