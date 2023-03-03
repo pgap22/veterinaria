@@ -22,7 +22,7 @@ const linksNav = () => {
   ))
 }
 
-export default function Example () {
+export const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (

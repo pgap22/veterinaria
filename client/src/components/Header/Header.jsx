@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom'
-import { NavLink } from './Link'
+import { NavLink } from '../CustomComponents/Link'
 import { shallow } from 'zustand/shallow'
-import { useAuth } from '../store/auth'
+import { useAuth } from '../../store/auth'
 
-// import { CitasContainer } from '../components/Citas'
+const LINK_STYLES_NAV = 'block rounded-lg bg-gray-300 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-400 focus:outline-none focus:ring text-center'
+const ACTIVE_LINKS_STYLES_NAV = 'pointer-events-none bg-gray-400 text-center'
 
-export default function HeaderClient () {
+export default function Header ({ subTitle, paths }) {
   const user = useAuth((state) => state.user, shallow)
   const setUser = useAuth((state) => state.setUser, shallow)
   const logout = () => {
@@ -13,8 +14,6 @@ export default function HeaderClient () {
     setUser({})
     navigate('/')
   }
-  const linkStyles = 'block rounded-lg bg-gray-300 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-400 focus:outline-none focus:ring text-center'
-  const activeStyles = 'pointer-events-none bg-gray-400 text-center'
 
   const navigate = useNavigate()
 
@@ -29,23 +28,18 @@ export default function HeaderClient () {
               </h1>
 
               <p className='mt-1.5 text-sm text-gray-500'>
-                Aqui estan tus citas veterinarias! 🐶
+                Aqui puedes cuidar a tus mascotas! 🐶
               </p>
             </div>
 
             <div className='mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center'>
-
-              <NavLink to='/home' stylesComponent={linkStyles} classNameIsActive={activeStyles}>
-                Home
-              </NavLink>
-
-              <NavLink to='/pets' stylesComponent={linkStyles} classNameIsActive={activeStyles}>
-                Pets
-              </NavLink>
-
-              <NavLink to='/appointments' stylesComponent={linkStyles} classNameIsActive={activeStyles}>
-                Appointments
-              </NavLink>
+              {paths.map((x, i) => {
+                return (
+                  <NavLink key={i} to={x.path} stylesComponent={LINK_STYLES_NAV} classNameIsActive={ACTIVE_LINKS_STYLES_NAV}>
+                    {x.page}
+                  </NavLink>
+                )
+              })}
 
               <button
                 onClick={logout}

@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import { AiFillEye } from 'react-icons/ai'
 import { useMutation } from 'react-query'
 import { Link } from 'react-router-dom'
-import { authUser, registerUser } from '../api/auth'
+import { registerUser } from '../api/auth'
 
 export default function Register () {
   return (
@@ -116,7 +116,7 @@ const Form = () => {
             {...register('email', {
               required: true,
               pattern:
-                /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
             })}
             type='email'
             id='email'

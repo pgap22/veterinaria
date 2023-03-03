@@ -4,12 +4,14 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 import './index.css'
 import Login from './pages/login'
-import HeaderClient from './components/HeaderClient'
+
+import Header from './components/Header/Header'
+
 import Register from './pages/register'
 import { Home } from './pages/home'
-import { CitasContainer } from './components/Citas'
-import Index from './pages'
-import { PetsContainer } from './components/Pets'
+import { CitasContainer } from './components/Containers/Citas'
+import { Index } from './pages'
+import { PetsContainer } from './components/Containers/Pets'
 
 import { QueryClient, QueryClientProvider } from 'react-query'
 
@@ -17,6 +19,9 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import UnProtectedRoute from './layouts/UnprotectedRoute'
 
 import { AuthProvider } from './context/AuthContext'
+
+import { PATHS_DUENO } from './constans/routes.js'
+import { SUBTITLE_DUENO } from './constans/subtitles'
 
 const queryClient = new QueryClient()
 
@@ -49,7 +54,7 @@ const router = createBrowserRouter([
     path: '/home',
     element: (
       <>
-        <HeaderClient />
+        <Header subTitle={SUBTITLE_DUENO} paths={PATHS_DUENO} />
         <Home />
       </>
     )
@@ -58,7 +63,7 @@ const router = createBrowserRouter([
     path: '/pets',
     element: (
       <>
-        <HeaderClient />
+        <Header subTitle={SUBTITLE_DUENO} paths={PATHS_DUENO} />
         <PetsContainer />
       </>
     )
@@ -67,7 +72,7 @@ const router = createBrowserRouter([
     path: '/appointments',
     element: (
       <>
-        <HeaderClient />
+        <Header subTitle={SUBTITLE_DUENO} paths={PATHS_DUENO} />
         <CitasContainer />
       </>
     )

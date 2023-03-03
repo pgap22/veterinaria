@@ -1,15 +1,16 @@
-
 import { MdPets } from 'react-icons/md'
-import { ModalPets } from './ModalPets'
+import { AddPetsForm } from '../Modals/AddPetsForm'
+// import { ModalDeletePet } from './ModalDeletePet.jsx'
+
 const PetCard = () => {
   return (
     <>
       <div className='flex items-center justify-center'>
-        <div className='flex flex-col items-center justify-center relative'>
+        <div className='flex flex-col items-center justify-center relative '>
 
           <div
             id='partnerCard'
-            className=' bg-white shadow-lg rounded-lg text-black overflow-hidden max-w-sm p-2 h-auto flex flex-col'
+            className=' bg-white hover:shadow-xl shadow-lg rounded-lg text-black overflow-hidden max-w-sm p-2 h-auto flex flex-col'
           >
             <div>
               <h3 className='text-left pl-8 pb-4 pt-2 text-xl'>
@@ -46,8 +47,8 @@ const PetCard = () => {
               </div>
             </div>
             <div className='flex w-full justify-evenly'>
-              <button className=' bg-blue-500 rounded-md py-2 px-8'>Editar</button>
-              <button className=' bg-red-500 rounded-md py-2 px-8'>Eliminar</button>
+              <button className=' bg-blue-500 rounded-md py-2 px-8 font-bold text-white'>Editar</button>
+              <button className=' bg-red-500 rounded-md py-2 px-8 font-bold text-white'>Eliminar</button>
             </div>
           </div>
 
@@ -62,10 +63,11 @@ export const PetsContainer = () => {
     <section className='mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8 pb-8'>
       <div className=' w-full flex justify-between items-center'>
         <h2 className='font-bold text-3xl my-6'>Tus Mascotas</h2>
-        <ModalPets />
+        <AddPetsForm />
       </div>
 
       <div className=' gap-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full h-auto'>
+        {/* <ModalDeletePet /> */}
         <PetCard />
         <PetCard />
         <PetCard />
