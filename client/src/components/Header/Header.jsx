@@ -6,7 +6,7 @@ import { useAuth } from '../../store/auth'
 const LINK_STYLES_NAV = 'block rounded-lg bg-gray-300 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-400 focus:outline-none focus:ring text-center'
 const ACTIVE_LINKS_STYLES_NAV = 'pointer-events-none bg-gray-400 text-center'
 
-export default function Header ({ subTitle, paths }) {
+export const Header = ({ subTitle, paths }) => {
   const user = useAuth((state) => state.user, shallow)
   const setUser = useAuth((state) => state.setUser, shallow)
   const logout = () => {

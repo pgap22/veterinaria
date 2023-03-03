@@ -7,7 +7,7 @@ import { authUser } from '../api/auth'
 import { useAuth } from '../store/auth'
 import { shallow } from 'zustand/shallow'
 
-export default function Login () {
+export const Login = () => {
   return (
     <>
       <div className='body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0'>

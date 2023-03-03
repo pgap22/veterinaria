@@ -5,7 +5,7 @@ import { useMutation } from 'react-query'
 import { Link } from 'react-router-dom'
 import { registerUser } from '../api/auth'
 
-export default function Register () {
+export const Register = () => {
   return (
     <>
       <div className='body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0'>

@@ -5,19 +5,12 @@ import { GrClose } from 'react-icons/gr'
 import { MdOutlinePets } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
+import { PATHS_INDEX, PATH_LOGIN } from '../constans/routes'
 // import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-const loginRoute = '/login'
-
-const navigation = [
-  { name: 'Mascotas', href: '/pets' },
-  { name: 'Solicitar citas', href: '/appointments' }
-
-]
-
-const linksNav = () => {
-  return navigation.map((item) => (
-    <Link key={item.name} to={item.href} className='text-sm font-semibold leading-6 text-gray-900'>
-      {item.name}
+const navItems = () => {
+  return PATHS_INDEX.map((x, i) => (
+    <Link key={i} to={x.path} className='text-sm font-semibold leading-6 text-gray-900'>
+      {x.page}
     </Link>
   ))
 }
@@ -58,9 +51,7 @@ export const Index = () => {
       <div className='px-6 pt-6 lg:px-8'>
         <nav className='flex items-center justify-between' aria-label='Global'>
           <div className='flex lg:flex-1'>
-            <a href='/' className='-m-1.5 p-1.5'>
-              <MdOutlinePets size={35} color='#9089FC' />
-            </a>
+            <MdOutlinePets size={35} color='#9089FC' />
           </div>
 
           {/* Menu de hamburgesa icon OPEN */}
@@ -76,12 +67,12 @@ export const Index = () => {
           </div>
           {/* Nav items */}
           <div className='hidden lg:flex lg:gap-x-12'>
-            {linksNav()}
+            {navItems()}
           </div>
           <div className='hidden lg:flex lg:flex-1 lg:justify-end'>
-            <a href={loginRoute} className='text-sm font-semibold leading-6 text-gray-900'>
-              Iniciar sesión <span aria-hidden='true'>&rarr;</span>
-            </a>
+            <Link to={PATH_LOGIN} className='text-sm font-semibold leading-6 text-gray-900'>
+              Login <span aria-hidden='true'>&rarr;</span>
+            </Link>
           </div>
         </nav>
         {/* BURGER MENU */}
@@ -103,11 +94,11 @@ export const Index = () => {
             <div className='mt-6 flow-root'>
               <div className='-my-6 divide-y divide-gray-500/10'>
                 <div className='space-y-2 py-6 flex flex-col gap-4'>
-                  {linksNav()}
+                  {navItems()}
                 </div>
                 <div className='py-6'>
                   <a
-                    href={loginRoute}
+                    href={PATH_LOGIN}
                     className='-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-6 text-gray-900 hover:bg-gray-400/10'
                   >
                     Iniciar sesión
