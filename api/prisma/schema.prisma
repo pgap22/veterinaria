@@ -8,22 +8,22 @@ datasource db {
 }
 
 model cita {
-  id            Int           @id @default(autoincrement())
-  estado        String
-  fecha         DateTime?
-  motivo        String
+  id     Int       @id @default(autoincrement())
+  estado String
+  fecha  DateTime?
+  motivo String
 
   idVeterinario Int?
   idMascota     Int
   idSecretaria  Int?
   idDueno       Int
-  
-  mascota       mascota       @relation(fields: [idMascota], references: [id], map: "Cita_idMascota_fkey")
-  secretaria    secretaria?   @relation(fields: [idSecretaria], references: [id], map: "Cita_idSecretaria_fkey")
-  veterinario   veterinario?  @relation(fields: [idVeterinario], references: [id], map: "Cita_idVeterinario_fkey")
-  dueno         dueno         @relation(fields: [idDueno], references: [id])
-  diagnostico   diagnostico[]
-  pago          pago?
+
+  mascota     mascota       @relation(fields: [idMascota], references: [id], map: "Cita_idMascota_fkey")
+  secretaria  secretaria?   @relation(fields: [idSecretaria], references: [id], map: "Cita_idSecretaria_fkey")
+  veterinario veterinario?  @relation(fields: [idVeterinario], references: [id], map: "Cita_idVeterinario_fkey")
+  dueno       dueno         @relation(fields: [idDueno], references: [id])
+  diagnostico diagnostico[]
+  pago        pago?
 
   @@index([idMascota], map: "Cita_idMascota_fkey")
   @@index([idSecretaria], map: "Cita_idSecretaria_fkey")
@@ -52,6 +52,7 @@ model dueno {
   password  String
   telefono  String
   nombre    String
+  role      String    @default("dueno")
   cita      cita[]
   mascota   mascota[]
   pago      pago[]
@@ -89,16 +90,20 @@ model secretaria {
   nombre   String
   email    String
   password String
-  cita     cita[]
+
+  role String @default("secretaria")
+  cita cita[]
 }
 
 model veterinario {
-  id           Int           @id @default(autoincrement())
+  id           Int    @id @default(autoincrement())
   email        String
   nombre       String
   password     String
   especialidad String
   telefono     String
-  cita         cita[]
-  diagnostico  diagnostico[]
+  role         String @default("veterinario")
+
+  cita        cita[]
+  diagnostico diagnostico[]
 }

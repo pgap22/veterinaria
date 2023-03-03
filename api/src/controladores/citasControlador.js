@@ -1,5 +1,6 @@
 import { z, ZodError } from "zod";
 import { PrismaClient } from "@prisma/client";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
 
 const citaModelo = z.object({
   motivo: z.string(),
@@ -51,16 +52,16 @@ const solicitarCita = async (req, res) => {
     return res.status(400).json(error);
   }
 };
-const confirmarCita = async(req,res)=>{
+const confirmarCita = async (req, res) => {
   try {
-    const {id} = req.params
+    const { id } = req.params
 
-    const isUpdated =  await prisma.cita.updateMany({
-      data:{
+    const isUpdated = await prisma.cita.updateMany({
+      data: {
         estado: 'activo'
       },
-      where:{
-        AND:[
+      where: {
+        AND: [
           {
             id: parseInt(id),
           },
@@ -74,13 +75,13 @@ const confirmarCita = async(req,res)=>{
       }
     })
 
-    if(!isUpdated.count){
+    if (!isUpdated.count) {
       return res.status(200).json({
         message: "Esa cita no se ha encontrado o ya esta confirmada"
       })
     }
 
-    const citaConfirmada = await prisma.cita.findFirst({where:{id:parseInt(id)}})
+    const citaConfirmada = await prisma.cita.findFirst({ where: { id: parseInt(id) } })
 
     return res.status(200).json(citaConfirmada);
 
@@ -89,6 +90,31 @@ const confirmarCita = async(req,res)=>{
     return res.status(200).json(error);
   }
 }
+const obtenerCitasUsuarios = async (req, res) => {
+  try {
+    const usuarioID = req.usuario.id;
+
+    const citas = await prisma.cita.findMany({
+      where: {
+        idDueno: usuarioID
+      },
+      include: {
+        diagnostico: true,
+        mascota: true,
+        pago: true,
+        veterinario: true
+      }
+    })
+
+    return res.status(200).json(citas)
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      message: "Hubo un error con la obtencion de citas"
+    })
+  }
+}
+
 
 //Secretario
 const obtenerCitasPendientes = async (req, res) => {
@@ -107,16 +133,15 @@ const obtenerCitasPendientes = async (req, res) => {
     });
   }
 };
-//Secretario
 const aceptarCita = async (req, res) => {
   try {
     const { id } = req.params;
 
     const detallesCita = detallesCitaModel.parse(req.body);
 
-    const existeVeterinario = await prisma.veterinario.findFirst({where:{id:detallesCita.idVeterinario}})
+    const existeVeterinario = await prisma.veterinario.findFirst({ where: { id: detallesCita.idVeterinario } })
 
-    if(!existeVeterinario){
+    if (!existeVeterinario) {
       return res.status(400).json({
         message: "El veterinario no existe"
       })
@@ -140,9 +165,73 @@ const aceptarCita = async (req, res) => {
       return res.status(400).json(error.issues);
     }
 
+    if (error instanceof PrismaClientKnownRequestError) {
+      return res.status(400).json({
+        message: "La cita no existe o es invalida"
+      });
+    }
+
     console.log(error);
-    return res.status(200).json(error);
+    return res.status(400).json(error);
   }
 };
 
-export { solicitarCita, obtenerCitasPendientes, aceptarCita,confirmarCita };
+
+
+//Veterinarios
+const obtenerCitasVeterinaria = async (req, res) => {
+  try {
+    const citas = await prisma.cita.findMany({
+      where: {
+        estado: "activo"
+      },
+      include: {
+        mascota: true,
+        dueno: true,
+        secretaria: true,
+        pago: true,
+        diagnostico: true
+      }
+    })
+    return res.status(200).json(citas);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error);
+  }
+}
+const finalizarCita = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const citaFinalizada = await prisma.cita.update({
+      data: {
+        estado: 'pagoPendiente'
+      },
+      where: {
+        id
+      }
+    })
+
+    return res.status(200).json(citaFinalizada)
+
+  } catch (error) {
+    if (error instanceof PrismaClientKnownRequestError) {
+      return res.status(400).json({
+        message: "La cita no existe o es invalida"
+      });
+    }
+
+    console.log(error);
+    return res.status(400).json(error);
+  }
+}
+
+export {
+  solicitarCita,
+  obtenerCitasPendientes,
+  aceptarCita,
+  confirmarCita,
+  obtenerCitasUsuarios,
+  obtenerCitasVeterinaria,
+  finalizarCita
+};
