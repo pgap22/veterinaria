@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const autentificacion = async (req, res, next) => {
+const autentificacionVeterinario = async (req, res, next) => {
   try {
     //Primer paso obtengo el token de autentificacion
     const autorizacion = req.headers.authorization;
@@ -14,10 +14,10 @@ const autentificacion = async (req, res, next) => {
       const tokenVerificado = jwt.verify(token, process.env.JWT_SECRET);
 
       //Verifico si el usuario si exista
-      const usuarioEncontradoPorId = await prisma.dueno.findFirst({
+      const usuarioEncontradoPorId = await prisma.veterinario.findFirst({
         where: {
           id: tokenVerificado.id,
-          email: tokenVerificado.email
+          email: tokenVerificado.email,
         },
         // select: {
         //     email: true,
@@ -52,4 +52,4 @@ const autentificacion = async (req, res, next) => {
   }
 };
 
-export default autentificacion;
+export default autentificacionVeterinario;

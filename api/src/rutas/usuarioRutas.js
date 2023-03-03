@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { crearUsuario,buscarUsuarioPorCredenciales } from "../controladores/usuarioControlador.js";
+import { crearUsuario,buscarUsuarioPorCredenciales, obtenerPerfilPorToken } from "../controladores/usuarioControlador.js";
 const rutas = Router();
 
 
@@ -10,5 +10,9 @@ rutas.post("/login",buscarUsuarioPorCredenciales)
 
 //Crear Ruta de registro --> Crear un nuevo usuario en la bd
 rutas.post("/",crearUsuario)
+
+//Obtener perfil
+rutas.get("/perfil",obtenerPerfilPorToken)
+
 
 export default rutas

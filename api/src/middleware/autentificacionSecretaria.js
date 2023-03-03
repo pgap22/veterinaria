@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const autentificacion = async (req, res, next) => {
+const autentificacionSecretaria = async (req, res, next) => {
   try {
     //Primer paso obtengo el token de autentificacion
     const autorizacion = req.headers.authorization;
@@ -14,10 +14,10 @@ const autentificacion = async (req, res, next) => {
       const tokenVerificado = jwt.verify(token, process.env.JWT_SECRET);
 
       //Verifico si el usuario si exista
-      const usuarioEncontradoPorId = await prisma.dueno.findFirst({
+      const usuarioEncontradoPorId = await prisma.secretaria.findFirst({
         where: {
-          id: tokenVerificado.id,
-          email: tokenVerificado.email
+            id: tokenVerificado.id,
+            email: tokenVerificado.email
         },
         // select: {
         //     email: true,
@@ -28,16 +28,18 @@ const autentificacion = async (req, res, next) => {
         // },
       });
 
-      if (usuarioEncontradoPorId) {
-        req.usuario = usuarioEncontradoPorId;
+      if(usuarioEncontradoPorId){
+        console.log(usuarioEncontradoPorId)
+        req.usuario = usuarioEncontradoPorId
         //Borrar el atributo password (antes se usaba el select en prisma pero ahora prefiero usar este)
-        delete req.usuario.password;
-        return next();
+        delete req.usuario.password
+        return next()
       }
 
       return res.status(400).json({
         message: "Hubo un error de autentificacion",
       });
+
     }
 
     //Si no entra en el if, no hay token de autentificacion
@@ -45,11 +47,11 @@ const autentificacion = async (req, res, next) => {
       message: "No estas autentificado",
     });
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return res.status(400).json({
       message: "Hubo un error de autentificacion",
     });
   }
 };
 
-export default autentificacion;
+export default autentificacionSecretaria;
