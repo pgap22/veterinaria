@@ -7,14 +7,14 @@ const mascotaModel = z.object({
   especie: z.string().min(1),
   raza: z.string().min(1),
   genero: z.boolean(),
-  edad: z.string().min(1),
+  edad: z.number().min(1),
 });
 const mascotaModelUpdate = z.object({
   nombre: z.string().min(1).optional(),
   especie: z.string().min(1).optional(),
   raza: z.string().min(1).optional(),
   genero: z.boolean().optional(),
-  edad: z.string().min(1).optional(),
+  edad: z.number().min(1).optional(),
 });
 
 const prisma = new PrismaClient();

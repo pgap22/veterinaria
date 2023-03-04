@@ -64,7 +64,7 @@ model mascota {
   especie  String
   raza     String
   genero   Boolean
-  edad     String
+  edad     Int
   id_dueno Int
   cita     cita[]
   dueno    dueno   @relation(fields: [id_dueno], references: [id], map: "Mascota_id_dueno_fkey")
