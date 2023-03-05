@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { AiFillEye } from 'react-icons/ai'
 import { useMutation } from 'react-query'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '../api/auth'
 
 export const Register = () => {
@@ -52,12 +52,17 @@ const Form = () => {
 
   const { register, handleSubmit } = useForm()
 
+  const navigate = useNavigate()
+  const [errorMessage, setErrorMessage] = useState('')
+
   const { mutate } = useMutation(registerUser, {
     onSuccess: () => {
       setTry(false)
       setSuccess(true)
+      navigate('/login')
     },
-    onError: () => {
+    onError: (e) => {
+      setErrorMessage(e.response.data.message)
       setError(true)
     }
   })
@@ -84,7 +89,7 @@ const Form = () => {
         {/* Alerta de error */}
         {error && (
           <div className='p-2 bg-red-600 text-white font-bold mb-5 rounded'>
-            <p>El email o contraseña es incorrecto!</p>
+            <p>{errorMessage}</p>
           </div>
         )}
 
@@ -144,7 +149,8 @@ const Form = () => {
             {...register('telefono', {
               required: true
             })}
-            type='number'
+            autoComplete='tel'
+            type='tezt'
             id='telefono'
             className='bg-gray-200 rounded w-full text-gray-700 focus:outline-none border-b-4 border-gray-300 focus:border-purple-600 transition duration-500 px-3 pb-3'
           />

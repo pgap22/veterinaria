@@ -1,57 +1,56 @@
-import { useNavigate } from 'react-router-dom'
+import { MdOutlinePets } from 'react-icons/md'
 import { NavLink } from '../CustomComponents/Link'
+import { DropdownComponentHeader } from '../Menus/DropDownHeader'
+
 import { shallow } from 'zustand/shallow'
 import { useAuth } from '../../store/auth'
 
-const LINK_STYLES_NAV = 'block rounded-lg bg-gray-300 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-400 focus:outline-none focus:ring text-center'
-const ACTIVE_LINKS_STYLES_NAV = 'pointer-events-none bg-gray-400 text-center'
+const LINK_STYLES_NAV = 'text-gray-300 hover:text-gray-900 transition-all delay-250 hover:border-b hover:border-gray-200 uppercase tracking-widest '
+const ACTIVE_LINKS_STYLES_NAV = 'text-gray-900 border-b border-gray-300 transition-all delay-250 uppercase tracking-widest'
 
 export const Header = ({ subTitle, paths }) => {
   const user = useAuth((state) => state.user, shallow)
-  const setUser = useAuth((state) => state.setUser, shallow)
-  const logout = () => {
-    window.localStorage.removeItem('token')
-    setUser({})
-    navigate('/')
-  }
-
-  const navigate = useNavigate()
-
   return (
     <>
-      <header aria-label='Page Header' className='bg-white shadow-md'>
-        <div className='mx-auto max-w-screen-xl px-4 py-8 sm:py-12 sm:px-6 lg:px-8'>
-          <div className='sm:flex sm:items-center sm:justify-between'>
-            <div className='text-center sm:text-left'>
-              <h1 className='text-2xl font-bold text-gray-900 sm:text-3xl'>
-                Bienvenido Juan Carlos{user.name}
-              </h1>
+      <header>
+        <nav className='bg-white border-gray-100 px-4 lg:px-6 py-2.5 border-b'>
+          <div className='flex flex-wrap justify-between items-center mx-auto max-w-screen-xl sm:flex-row flex-col'>
 
-              <p className='mt-1.5 text-sm text-gray-500'>
-                Aqui puedes cuidar a tus mascotas! 🐶
-              </p>
+            <div className='flex items-center gap-3'>
+              <MdOutlinePets size={35} className='text-gray-800' />
+              <span className='self-center text-2xl font-semibold whitespace-nowrap'>Vet online</span>
             </div>
 
-            <div className='mt-4 flex flex-col gap-4 sm:mt-0 sm:flex-row sm:items-center'>
-              {paths.map((x, i) => {
-                return (
-                  <NavLink key={i} to={x.path} stylesComponent={LINK_STYLES_NAV} classNameIsActive={ACTIVE_LINKS_STYLES_NAV}>
-                    {x.page}
-                  </NavLink>
-                )
-              })}
+            <div className='justify-between items-center flex w-auto ' id='mobile-menu-2'>
+              <ul className='flex font-medium space-x-8 '>
+                {paths.map((x, i) => {
+                  return (
+                    <li key={i}>
+                      <NavLink to={x.path} stylesComponent={LINK_STYLES_NAV} classNameIsActive={ACTIVE_LINKS_STYLES_NAV}>
+                        {x.page}
+                      </NavLink>
+                    </li>
+                  )
+                })}
 
-              <button
-                onClick={logout}
-                className='block rounded-lg bg-red-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-red-700 focus:outline-none focus:ring'
-                type='button'
-              >
-                Log out
-              </button>
+                {/* <a href='#' className='block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 ' aria-current='page'>Home</a> */}
 
+              </ul>
+            </div>
+
+            <div className='flex items-center'>
+              <div className='flex items-center gap-2'>
+                <div className='flex flex-col'>
+                  <h1 className='text-lg font-bold text-gray-900 uppercase '>
+                    {user.nombre}
+                  </h1>
+                </div>
+
+                <DropdownComponentHeader />
+              </div>
             </div>
           </div>
-        </div>
+        </nav>
       </header>
     </>
   )

@@ -1,9 +1,36 @@
 import { useState } from 'react'
 import { IoIosClose } from 'react-icons/io'
 
+import { useForm } from 'react-hook-form'
+
+import axiosClient from '../../config/axiosClient'
+import { mutate } from 'swr'
+
+const addPet = async (newPet) => {
+  const token = window.localStorage.getItem('token')
+  const configHeaders = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  const { data } = await axiosClient.post('/mascotas/', newPet, configHeaders)
+  return data
+}
+
 export const AddPetsForm = () => {
-  // To edit i will need to verify the edit prop to get the pet by id which is a prop to
   const [showModal, setShowModal] = useState(false)
+  const { register, handleSubmit } = useForm()
+
+  const successSubmit = async (data) => {
+    data.genero = data.genero === 'true'
+    data.edad = parseInt(data.edad)
+
+    mutate('/mascotas', async () => {
+      await addPet(data)
+      setShowModal(false)
+    })
+  }
+
   return (
     <>
       <button
@@ -29,61 +56,55 @@ export const AddPetsForm = () => {
                     <h3 className='text-3xl font-semibold'>
                       Agrega a una nueva Mascota
                     </h3>
-
                     <IoIosClose className='fill-black cursor-pointer' size={40} onClick={() => setShowModal(false)} />
                   </div>
                   {/* body */}
-
                   <div className='relative p-6 flex-auto'>
-
-                    <form className='bg-white rounded'>
+                    <form className='bg-white rounded' onSubmit={handleSubmit(successSubmit)}>
                       <div className='mb-4'>
                         <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='name'>
                           Name:
                         </label>
-                        <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='name' type='text' placeholder='Aristides' />
+                        <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='name' type='text' placeholder='Aristides' {...register('nombre', { required: true })} />
                       </div>
 
                       <div className='mb-4'>
                         <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='username'>
                           Specie:
                         </label>
-                        <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='specie' type='text' placeholder='caninus' />
+                        <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='specie' type='text' placeholder='caninus' {...register('especie', { required: true })} />
                       </div>
 
                       <div className='mb-4'>
                         <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='username'>
                           Race:
                         </label>
-                        <input className='border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='race' type='text' placeholder='Dalmata' />
+                        <input className='border-gray-300 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='race' type='text' placeholder='Dalmata' {...register('raza', { required: true })} />
                       </div>
 
                       <div className='mb-4'>
                         <label htmlFor='gender' className='block text-gray-700 text-sm font-bold mb-2'>Select pet's gender</label>
-                        <select id='gender' className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5'>
-                          <option defaultValue='' disabled />
+
+                        <select id='countries' className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5' {...register('genero', { required: true })}>
                           <option value>Male</option>
                           <option value={false}>Female</option>
                         </select>
+
                       </div>
 
                       <div className='mb-4'>
                         <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='username'>
                           Age:
                         </label>
-                        <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='age' type='number' placeholder='8' />
+                        <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='age' type='text' placeholder='8' {...register('edad', { required: true })} />
                       </div>
 
                       <div className='flex items-center gap-4'>
-                        <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='button'>
+                        <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
                           Add
-                        </button>
-                        <button className=' hover:text-blue-800 text-blue-500 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' onClick={() => setShowModal(false)}>
-                          Close
                         </button>
                       </div>
                     </form>
-
                   </div>
 
                 </div>
@@ -92,7 +113,6 @@ export const AddPetsForm = () => {
             <div className='opacity-25 fixed inset-0 z-40 bg-black' />
           </>
           )
-
         : null}
     </>
   )

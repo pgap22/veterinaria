@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { authUser } from '../api/auth'
 import { useAuth } from '../store/auth'
 import { shallow } from 'zustand/shallow'
-
+import { PATHS_DUENO } from '../constants/routes'
 export const Login = () => {
   return (
     <>
@@ -58,7 +58,7 @@ const Form = () => {
 
       setUser(data)
 
-      navigate('/home')
+      navigate(PATHS_DUENO[0].path)
     },
 
     onError: () => {

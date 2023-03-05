@@ -4,7 +4,7 @@ export const NavLink = ({ stylesComponent, classNameIsActive, to, children, ...p
   return (
     <NavlinkReact
       {...props}
-      className={({ isActive }) => isActive ? `${stylesComponent}${classNameIsActive}` : `${stylesComponent}`}
+      className={({ isActive }) => isActive ? `${classNameIsActive}` : `${stylesComponent}`}
       to={to}
     >
       {children}

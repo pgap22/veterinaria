@@ -5,12 +5,15 @@ import rutasCitas from "./rutas/citasRutas.js"
 import rutasDiagnostico from "./rutas/diagnosticoRutas.js";
 import rutasPagos from "./rutas/pagoRutas.js";
 import dotenv from "dotenv"
+import cors from 'cors'
+
 dotenv.config();
 
 const app = express()
 
 //Configuracion JSON
 app.use(express.json());
+app.use(cors())
 
 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJqdWFuQGp1YW4uY29tIiwiaWF0IjoxNjc3Nzg1NDQwfQ.bUIbfkcl3Qe1PsEERtJIxSGSHPDR8Rlop8vkt6QrRjk
 app.get("/",(req,res)=>{

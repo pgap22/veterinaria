@@ -5,7 +5,7 @@ import { GrClose } from 'react-icons/gr'
 import { MdOutlinePets } from 'react-icons/md'
 import { Link } from 'react-router-dom'
 
-import { PATHS_INDEX, PATH_LOGIN } from '../constans/routes'
+import { PATHS_INDEX, PATH_LOGIN } from '../constants/routes'
 // import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 const navItems = () => {
   return PATHS_INDEX.map((x, i) => (
