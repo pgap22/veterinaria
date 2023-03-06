@@ -77,7 +77,7 @@ const Appointment = ({ data }) => {
             <p className='text-2xl font-bold text-[#303030]'>{data.mascota.nombre}</p>
             <div className='flex w-full justify-between items-center mt-4'>
               <p className='opacity-60 '>Age - {data.mascota.edad} meses</p>
-              {data.estado !== 'pendiente' && <p className='opacity-60 '>Date - 20/30/36 {data.fecha}</p>}
+              {data.estado !== 'pendiente' && <p className='opacity-60 '>Date - {data.fecha.split("T")[0]}</p>}
 
               {data.estado === 'finalizada' && (
                 <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 cursor-pointer' onClick={() => navigate(`/appointments/diagnostic/${data.id}`)}>

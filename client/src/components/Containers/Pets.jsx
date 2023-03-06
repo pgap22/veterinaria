@@ -22,7 +22,7 @@ export const PetsContainer = () => {
   const mascotas = data.data
   setPets(mascotas)
 
-  const printPet = () => {
+  const PrintPets = () => {
     return mascotas.map((pet, i) => {
       return <PetCard key={i} pet={pet} page />
     })
@@ -37,7 +37,7 @@ export const PetsContainer = () => {
 
       <div className=' gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-c xl:grid-cols-4 w-full h-auto mx-auto mb-5'>
 
-        {!mascotas.length ? (<><h1>NO HAY MASCOTAS</h1></>) : printPet()}
+        {!mascotas.length ? (<><h1>NO HAY MASCOTAS</h1></>) : <PrintPets />}
 
         {isOpenEdit ? <ModalEditPets /> : null}
         {isOpenDelete ? <ModalDeleteItem /> : null}

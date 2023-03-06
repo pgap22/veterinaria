@@ -1,14 +1,11 @@
 import { DistributeAppointment } from '../Modals/DistributeAppointment'
 import useSWR from 'swr'
-import { fetcherAppointmentsPendientes } from '../../api/secy'
+import { fetcherAppointmentsPendientes} from '../../api/secy'
+
 
 const Appointment = ({ data }) => {
-  // const { dataPet, error, isLoading } = useSWR('/mascotas/', fetcherPetSecy)
-  // if (error) return <div>failed to load</div>
-  // if (isLoading) return <div>loading...</div>
-  // const petData = dataPet.data
-
-  // console.log(dataPet)
+  
+  const {mascota} = data; 
   return (
     <div className='container'>
       <div className='flex flex-wrap'>
@@ -20,14 +17,14 @@ const Appointment = ({ data }) => {
               </h4>
             </div>
             <div className='flex w-full justify-start gap-4 items-center'>
-              <p className='px-3 py-1 bg-[#a3afb8] rounded-lg font-medium text-white'>Canino</p>
-              <p className='text-white px-3 py-1 font-medium rounded-lg capitalize bg-orange-600'>Pendiente</p>
+              <p className='px-3 py-1 bg-[#a3afb8] rounded-lg font-medium text-white'>{mascota.especie}</p>
+              <p className='text-white px-3 py-1 font-medium rounded-lg capitalize bg-orange-600'>{data.estado}</p>
             </div>
           </div>
           <div className='flex flex-col gap-2'>
-            <p className='text-2xl font-bold text-[#303030]'>Labrador Retriever</p>
+            <p className='text-2xl font-bold text-[#303030]'>{mascota.nombre}</p>
             <div className='flex w-full justify-between items-center'>
-              <p className='opacity-60 '>Age - 18 meses</p>
+              <p className='opacity-60 '>Age - {mascota.edad} mese{mascota.edad>1 ? 's' : ''}</p>
               <DistributeAppointment id={data.id} />
 
             </div>
@@ -40,17 +37,28 @@ const Appointment = ({ data }) => {
   )
 }
 
-export const SecyContainer = () => {
-  const { data, error, isLoading } = useSWR('/citas/pendientes', fetcherAppointmentsPendientes)
+export const SecyContainer = () => {    
+  const { data, error, isLoading } = useSWR('/citas/pendientes', fetcherAppointmentsPendientes,{
+    refreshInterval: 3000
+  })
+
+
+
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
+  
   const appointmentsPendientes = data.data
 
+
+
+
+  
   const printAppointments = () => {
     return appointmentsPendientes.map((appointment, i) => {
       return <Appointment key={i} data={appointment} />
     })
   }
+
   return (
     <section className='mx-auto w-4/5 flex flex-col'>
       <div className=' w-full flex justify-start items-start'>

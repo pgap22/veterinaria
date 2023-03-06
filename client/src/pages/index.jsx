@@ -4,8 +4,9 @@ import { GiHamburgerMenu } from 'react-icons/gi'
 import { GrClose } from 'react-icons/gr'
 import { MdOutlinePets } from 'react-icons/md'
 import { Link } from 'react-router-dom'
-
+import { useAuth } from '../store/auth'
 import { PATHS_INDEX, PATH_LOGIN } from '../constants/routes'
+import { shallow } from 'zustand/shallow'
 // import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 const navItems = () => {
   return PATHS_INDEX.map((x, i) => (
@@ -16,6 +17,7 @@ const navItems = () => {
 }
 
 export const Index = () => {
+  const user = useAuth(state => state.user, shallow)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
@@ -70,18 +72,20 @@ export const Index = () => {
             {navItems()}
           </div>
           <div className='hidden lg:flex lg:flex-1 lg:justify-end'>
-            <Link to={PATH_LOGIN} className='text-sm font-semibold leading-6 text-gray-900'>
-              Login <span aria-hidden='true'>&rarr;</span>
-            </Link>
+            {
+              !user.id && (
+                <Link to={PATH_LOGIN} className='text-sm font-semibold leading-6 text-gray-900'>
+                  Login <span aria-hidden='true'>&rarr;</span>
+                </Link>
+              )
+            }
           </div>
         </nav>
         {/* BURGER MENU */}
         <Dialog as='div' open={mobileMenuOpen} onClose={setMobileMenuOpen}>
           <Dialog.Panel className='fixed inset-0 z-10 overflow-y-auto bg-white px-6 py-6 lg:hidden'>
             <div className='flex items-center justify-between'>
-              <a href='#' className='-m-1.5 p-1.5'>
-                <MdOutlinePets size={35} color='#9089FC' />
-              </a>
+              <MdOutlinePets className='cursor-pointer' size={35} color='#9089FC' />
               <button
                 type='button'
                 className='-m-2.5 rounded-md p-2.5 text-gray-700'
@@ -97,12 +101,16 @@ export const Index = () => {
                   {navItems()}
                 </div>
                 <div className='py-6'>
-                  <a
-                    href={PATH_LOGIN}
-                    className='-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-6 text-gray-900 hover:bg-gray-400/10'
-                  >
-                    Iniciar sesión
-                  </a>
+                  {
+                    !user.id && (
+                      <Link
+                        to={PATH_LOGIN}
+                        className='-mx-3 block rounded-lg py-2.5 px-3 text-base font-semibold leading-6 text-gray-900 hover:bg-gray-400/10'
+                      >
+                        Iniciar sesión
+                      </Link>
+                    )
+                  }
                 </div>
               </div>
             </div>
@@ -122,13 +130,25 @@ export const Index = () => {
                 La veterinaria online es la solución perfecta para aquellos dueños de mascotas que buscan la comodidad y eficiencia en la atención médica de sus peludos amigos
               </p>
               <div className='mt-10 flex items-center justify-center gap-x-6'>
-                <Link
-                  to='/login'
-                  className='rounded-md bg-[#9089FC] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-                >
-                  Comenzar
-                </Link>
-
+                {
+                    user.id
+                      ? (
+                        <Link
+                          to='/pets'
+                          className='rounded-md bg-[#9089FC] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                        >
+                          Ver mis mascotas
+                        </Link>
+                        )
+                      : (
+                        <Link
+                          to='/login'
+                          className='rounded-md bg-[#9089FC] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                        >
+                          Comenzar
+                        </Link>
+                        )
+                  }
               </div>
             </div>
           </div>

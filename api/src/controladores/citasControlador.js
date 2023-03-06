@@ -123,6 +123,10 @@ const obtenerCitasPendientes = async (req, res) => {
       where: {
         estado: "pendiente",
       },
+      include:{
+        mascota: true,
+        dueno: true,
+      }
     });
 
     return res.status(200).json(citasPendientes);
@@ -136,6 +140,10 @@ const obtenerCitasPendientes = async (req, res) => {
 const aceptarCita = async (req, res) => {
   try {
     const { id } = req.params;
+
+    //Cambiando el tipo fecha al reqbody
+    req.body.fecha = new Date(req.body.fecha);
+    req.body.idVeterinario = parseInt(req.body.idVeterinario);
 
     const detallesCita = detallesCitaModel.parse(req.body);
 
@@ -183,6 +191,7 @@ const obtenerCitasVeterinaria = async (req, res) => {
   try {
     const citas = await prisma.cita.findMany({
       where: {
+        idVeterinario: req.usuario.id,
         estado: "activo"
       },
       include: {

@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js";
 import { z, ZodError } from "zod"
 
 const diagnosticoModelo = z.object({

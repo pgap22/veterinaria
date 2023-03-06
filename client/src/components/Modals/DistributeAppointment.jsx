@@ -2,12 +2,30 @@ import { useState } from 'react'
 import { IoIosClose } from 'react-icons/io'
 import { FiArrowRight } from 'react-icons/fi'
 import { useForm } from 'react-hook-form'
+import useSWR, { mutate } from "swr";
+import { asignarCitaVeterinario, obtenerVeterinarios } from '../../api/secy';
+
 
 export const DistributeAppointment = ({ id }) => {
+
+  const {data,error,isLoading} = useSWR("/veterinarios", obtenerVeterinarios);
+
+  let veterinarios = [];
+
+
   const { register, handleSubmit } = useForm()
 
   const succesSubmit = async (data) => {
-    console.log(data)
+    mutate("/citas/pendientes", async ()=>{
+      await asignarCitaVeterinario({
+        ...data,
+        id
+      })
+    })
+  }
+
+  if(!isLoading){
+    veterinarios = data.data;
   }
 
   const [showModal, setShowModal] = useState(false)
@@ -37,13 +55,21 @@ export const DistributeAppointment = ({ id }) => {
                   {/* body */}
                   <div className='relative p-6 flex-auto'>
                     <form className='bg-white rounded' onSubmit={handleSubmit(succesSubmit)}>
+                      
+                      
                       <div className='mb-4'>
                         <label htmlFor='gender' className='block text-gray-700 text-sm font-bold mb-2'>Select vet to assing the appointment </label>
                         <select id='gender' className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5' {...register('idVeterinario', { required: true })}>
-                          <option value={1}>Pedro Capacho</option>
-                          <option value={2}>juan lemus</option>
+                        {
+                          veterinarios.map(veterinario => (
+                            <option key={veterinario.id*12348} value={veterinario.id}>{veterinario.nombre}</option>
+                          ))
+                        }
                         </select>
                       </div>
+
+
+
                       <div className='relative max-w-sm mb-3'>
                         <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
                           <svg aria-hidden='true' className='w-5 h-5 text-gray-500 dark:text-gray-400' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><path fillRule='evenodd' d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z' clipRule='evenodd' /></svg>
