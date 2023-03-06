@@ -24,10 +24,14 @@ const deletePet = async (id) => {
 export const ModalDeleteItem = () => {
   const setOpenDelete = usePetDelete((state) => state.setOpen, shallow)
   const selectedPet = usePets((state) => state.selectedPet, shallow)
+  
+  const mascotas = usePets((state) => state.pets, shallow)
+  const setPets = usePets((state) => state.setPets, shallow)
 
   const deletePetHandleClick = async () => {
     mutate('/mascotas', async () => {
       await deletePet(selectedPet.id)
+      setPets(mascotas.filter(mascota => mascota.id !== selectedPet.id))
       setOpenDelete(false)
     })
   }

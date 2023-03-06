@@ -53,13 +53,13 @@ const ManageDiagnostics = () => {
   useEffect(() => {
     if (typeof data !== "undefined") {
       const citaDiagnostico = data
-      console.log(citaDiagnostico)
+      console.log(data);
       setDiagnostics(citaDiagnostico.diagnostico)
     }
-  }, [isLoading]);
+  }, []);
 
   if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading & typeof data == "undefined") return <div>loading...</div>;
 
   return (
     <>

@@ -13,13 +13,8 @@ import { shallow } from 'zustand/shallow'
 export const PetsContainer = () => {
   const isOpenEdit = usePetEdit((state) => state.Open, shallow)
   const isOpenDelete = usePetDelete((state) => state.Open, shallow)
-  // const setPets = usePets((state) => state.setPets, shallow)
   const mascotas = usePets((state) => state.pets, shallow)
 
-  // const { data, error, isLoading } = useSWR('/mascotas', fetcherPets)
-  // if (error) return <div>failed to load</div>
-  // if (isLoading) return <div>loading...</div>
-  // const mascotas = data.data
 
   const PrintPets = () => {
     return mascotas.map((pet, i) => {

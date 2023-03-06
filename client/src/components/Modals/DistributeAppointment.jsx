@@ -24,7 +24,7 @@ export const DistributeAppointment = ({ id }) => {
     })
   }
 
-  if(!isLoading){
+  if(!isLoading & typeof veterinarios != 'undefined'){
     veterinarios = data.data;
   }
 

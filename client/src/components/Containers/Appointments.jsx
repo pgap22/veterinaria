@@ -101,7 +101,7 @@ const Appointment = ({ data }) => {
 
 export const CitasContainer = () => {
   const setAppointment = useAppointment((state) => state.setAppointment, shallow)
-
+  let appointments = []
   const [estado, setEstado] = useState('pendiente')
 
   const { data, error, isLoading } = useSWR('/citas', fetcher, {
@@ -109,8 +109,9 @@ export const CitasContainer = () => {
   })
 
   if (error) return <div>failed to load</div>
-  if (isLoading) return <div>loading...</div>
-  const appointments = data.data
+  if (isLoading & typeof data == 'undefined') return <div>loading...</div>
+  
+  appointments = data.data
   setAppointment(appointments)
 
   const appointmentsFilterByState = () => {

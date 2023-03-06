@@ -21,6 +21,11 @@ const updateData = async (petUpdate, id) => {
 export const ModalEditPets = ({ id }) => {
   const setOpenEdit = usePetEdit((state) => state.setOpen, shallow)
   const selectedPet = usePets((state) => state.selectedPet, shallow)
+  
+
+  const mascotas = usePets((state) => state.pets, shallow)
+  const setPets = usePets((state) => state.setPets, shallow)
+
   const { register, handleSubmit } = useForm({
     defaultValues: {
       nombre: selectedPet.nombre,
@@ -35,7 +40,8 @@ export const ModalEditPets = ({ id }) => {
     mutate('/mascotas', async () => {
       data.genero = data.genero === 'true'
       data.edad = parseInt(data.edad)
-      await updateData(data, selectedPet.id)
+      const updatedPet = await updateData(data, selectedPet.id)
+      setPets(mascotas.map(mascota => mascota.id == selectedPet.id ? updatedPet : mascota))
       setOpenEdit(false)
     })
   }

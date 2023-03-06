@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form'
 
 import axiosClient from '../../config/axiosClient'
 import { mutate } from 'swr'
+import { usePets } from '../../store/usePet'
+import { shallow } from 'zustand/shallow'
 
 const addPet = async (newPet) => {
   const token = window.localStorage.getItem('token')
@@ -21,12 +23,16 @@ export const AddPetsForm = () => {
   const [showModal, setShowModal] = useState(false)
   const { register, handleSubmit } = useForm()
 
+  const mascotas = usePets((state) => state.pets, shallow)
+  const setPets = usePets((state) => state.setPets, shallow)
+
   const successSubmit = async (data) => {
     data.genero = data.genero === 'true'
     data.edad = parseInt(data.edad)
 
     mutate('/mascotas', async () => {
-      await addPet(data)
+      const mascotanNew = await addPet(data)
+      setPets([...mascotas, mascotanNew])
       setShowModal(false)
     })
   }
