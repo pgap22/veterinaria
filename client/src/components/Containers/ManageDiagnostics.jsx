@@ -7,24 +7,13 @@ import {
   getDiagnosticAxios,
 } from "../../api/vet";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { useParams } from "react-router-dom";
 
 export const ManageDiagnostics = () => {
   const { id } = useParams();
-  const [diagnostics, setDiagnostics] = useState([]);
-  const { data, error, isLoading } = useSWR(
-    "/diagnosticos",
-    async () => await getDiagnosticAxios(id),
-    { revalidateOnMount: true }
-  );
-
-  useEffect(() => {
-    if (typeof data !== "undefined") {
-      setDiagnostics(data.data.diagnostico)
-    }
-  }, [isLoading]);
+  const { data: diagnostics, error, isLoading } = useSWR("/diagnosticos", async () => await getDiagnosticAxios(id));
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;

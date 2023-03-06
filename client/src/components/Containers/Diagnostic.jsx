@@ -44,22 +44,14 @@ export const DiagnosticContainer = () => {
 
 const ManageDiagnostics = () => {
   const { id } = useParams();
-  const [diagnostics, setDiagnostics] = useState([]);
-  const { data, error, isLoading } = useSWR(
+  const { data: diagnostics, error, isLoading } = useSWR(
     "/citas",
     async () => await obtenerCitasUsuario(id),
     { revalidateOnMount: true }
   );
-  useEffect(() => {
-    if (typeof data !== "undefined") {
-      const citaDiagnostico = data
-      console.log(data);
-      setDiagnostics(citaDiagnostico.diagnostico)
-    }
-  }, []);
 
   if (error) return <div>failed to load</div>;
-  if (isLoading & typeof data == "undefined") return <div>loading...</div>;
+  if (isLoading) return <div>loading...</div>;
 
   return (
     <>

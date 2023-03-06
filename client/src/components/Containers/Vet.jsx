@@ -23,7 +23,7 @@ export const VetContainer = () => {
     shallow
   );
 
-  const { data, error, isLoading } = useSWR(
+  const { data: appointments, error, isLoading } = useSWR(
     "/citas/activos",
     getActiveAppointement
   );
@@ -31,7 +31,6 @@ export const VetContainer = () => {
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
 
-  const appointments = data.data;
 
   return (
     <section className="mx-auto w-4/5 flex flex-col">
@@ -208,7 +207,7 @@ const ModalCreateDiagnostico = () => {
 
   const { register, handleSubmit } = useForm();
 
-  const sucessSubmit = (data) => {
+  const sucessSubmit =  (data) => {
     mutate('/diagnosticos', async () => {
       await AddDiagnosticAxios({
         ...data,

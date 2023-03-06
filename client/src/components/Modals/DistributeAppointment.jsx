@@ -8,12 +8,10 @@ import { asignarCitaVeterinario, obtenerVeterinarios } from '../../api/secy';
 
 export const DistributeAppointment = ({ id }) => {
 
-  const {data,error,isLoading} = useSWR("/veterinarios", obtenerVeterinarios);
+  const { register, handleSubmit } = useForm();
+  
+  const {data:veterinarios} = useSWR("/veterinarios", obtenerVeterinarios);
 
-  let veterinarios = [];
-
-
-  const { register, handleSubmit } = useForm()
 
   const succesSubmit = async (data) => {
     mutate("/citas/pendientes", async ()=>{
@@ -24,11 +22,8 @@ export const DistributeAppointment = ({ id }) => {
     })
   }
 
-  if(!isLoading & typeof veterinarios != 'undefined'){
-    veterinarios = data.data;
-  }
-
   const [showModal, setShowModal] = useState(false)
+
   return (
     <>
       <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500' onClick={() => setShowModal(true)}>
@@ -62,7 +57,7 @@ export const DistributeAppointment = ({ id }) => {
                         <select id='gender' className='bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5' {...register('idVeterinario', { required: true })}>
                         {
                           veterinarios.map(veterinario => (
-                            <option key={veterinario.id*12348} value={veterinario.id}>{veterinario.nombre}</option>
+                            <option key={veterinario.id} value={veterinario.id}>{veterinario.nombre}</option>
                           ))
                         }
                         </select>

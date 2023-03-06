@@ -52,7 +52,8 @@ const fetcher = async () => {
       Authorization: `Bearer ${token}`
     }
   }
-  return axiosClient.get('/citas', configHeaders)
+  const { data } = await axiosClient.get('/citas', configHeaders)
+  return data
 }
 
 const Appointment = ({ data }) => {
@@ -100,19 +101,12 @@ const Appointment = ({ data }) => {
 }
 
 export const CitasContainer = () => {
-  const setAppointment = useAppointment((state) => state.setAppointment, shallow)
-  let appointments = []
   const [estado, setEstado] = useState('pendiente')
 
-  const { data, error, isLoading } = useSWR('/citas', fetcher, {
-    refreshInterval: 3000
-  })
+  const { data: appointments, error, isLoading } = useSWR('/citas', async () => await fetcher() )
 
   if (error) return <div>failed to load</div>
-  if (isLoading & typeof data == 'undefined') return <div>loading...</div>
-  
-  appointments = data.data
-  setAppointment(appointments)
+  if (isLoading) return <div>loading...</div>
 
   const appointmentsFilterByState = () => {
     return appointments.filter((x) => {

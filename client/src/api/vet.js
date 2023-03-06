@@ -13,7 +13,7 @@ export const finishAppointement = (id) => {
   return axiosClient.get(`/citas/finalizar/${id}`, configHeaders)
 }
 
-export const getActiveAppointement = () => {
+export const getActiveAppointement = async() => {
   const token = window.localStorage.getItem('token')
 
   const configHeaders = {
@@ -21,7 +21,9 @@ export const getActiveAppointement = () => {
       Authorization: `Bearer ${token}`
     }
   }
-  return axiosClient.get('/citas/activos', configHeaders)
+  const {data} = await axiosClient.get('/citas/activos', configHeaders)
+
+  return data;
 }
 
 export const AddDiagnosticAxios = async (data) => {
@@ -67,7 +69,8 @@ export const getDiagnosticAxios = async (data) => {
       Authorization: `Bearer ${token}`
     }
   }
-  return axiosClient.get('/citas/'+data, configHeaders)
+  const {data:DataDiagnostic} = await axiosClient.get('/citas/'+data, configHeaders)
+  return DataDiagnostic
 }
 
 export const obtenerCitas = async()=>{
