@@ -3,11 +3,16 @@ import { VetCard } from "../Cards/VetCard";
 import { Link, useParams } from "react-router-dom";
 import { PATHS_DUENO } from "../../constants/routes";
 import { IoReturnUpBack } from "react-icons/io5";
-import { getDiagnosticAxios, obtenerCitasUsuario } from "../../api/vet";
+import { obtenerCitasUsuario } from "../../api/vet";
 import useSWR from "swr"
-import { useEffect, useState } from "react";
 
 export const DiagnosticContainer = () => {
+  const { id } = useParams();
+  const { data: citas, error, isLoading } = useSWR("/citas", async () => await obtenerCitasUsuario(id));
+
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
+
   return (
     <>
       <div className="w-4/5 mx-auto flex mt-5 gap-20 mb-8 ">
@@ -19,7 +24,17 @@ export const DiagnosticContainer = () => {
             </Link>
           </div>
           {/*DIV 1*/}
-          <ManageDiagnostics />
+          <div className="w-full mx-auto mt-5 flex flex-col gap-5">
+            {!citas.diagnostico.length ? (
+              <>
+                <h1>NO HAY DIAGNOSTICOS</h1>
+              </>
+            ) : (
+              citas.diagnostico.map((diagnostic, i) => {
+                return <Card key={i} data={diagnostic} />;
+              })
+            )}
+          </div>
         </div>
 
         <div className=" flex flex-row sm:flex-col justify-between gap-2">
@@ -37,34 +52,6 @@ export const DiagnosticContainer = () => {
             }}
           />
         </div>
-      </div>
-    </>
-  );
-};
-
-const ManageDiagnostics = () => {
-  const { id } = useParams();
-  const { data: diagnostics, error, isLoading } = useSWR(
-    "/citas",
-    async () => await obtenerCitasUsuario(id),
-    { revalidateOnMount: true }
-  );
-
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
-
-  return (
-    <>
-      <div className="w-full mx-auto mt-5 flex flex-col gap-5">
-        {!diagnostics.length ? (
-          <>
-            <h1>NO HAY DIAGNOSTICOS</h1>
-          </>
-        ) : (
-          diagnostics.map((diagnostic, i) => {
-            return <Card key={i} data={diagnostic} />;
-          })
-        )}
       </div>
     </>
   );

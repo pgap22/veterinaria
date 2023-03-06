@@ -13,7 +13,8 @@ import { useParams } from "react-router-dom";
 
 export const ManageDiagnostics = () => {
   const { id } = useParams();
-  const { data: diagnostics, error, isLoading } = useSWR("/diagnosticos", async () => await getDiagnosticAxios(id));
+  const { data: cita, error, isLoading } = useSWR("/diagnosticos", async () => await getDiagnosticAxios(id));
+
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
@@ -21,12 +22,12 @@ export const ManageDiagnostics = () => {
   return (
     <>
       <div className="w-4/5 mx-auto mt-5 flex flex-col gap-5">
-        {!diagnostics.length ? (
+        {!cita.diagnostico.length ? (
           <>
             <h1>NO HAY DIAGNOSTICOS</h1>
           </>
         ) : (
-          diagnostics.map((diagnostic, i) => {
+          cita.diagnostico.map((diagnostic, i) => {
             return <Card key={i} data={diagnostic} />;
           })
         )}

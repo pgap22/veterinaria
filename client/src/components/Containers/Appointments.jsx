@@ -6,8 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import axiosClient from '../../config/axiosClient.js'
 import useSWR from 'swr'
 
-import { useAppointment } from '../../store/useCita.js'
-import { shallow } from 'zustand/shallow'
 import { useState } from 'react'
 
 import { ModalPagoCita } from '../Modals/ModalPagoCita.jsx'
@@ -103,7 +101,7 @@ const Appointment = ({ data }) => {
 export const CitasContainer = () => {
   const [estado, setEstado] = useState('pendiente')
 
-  const { data: appointments, error, isLoading } = useSWR('/citas', async () => await fetcher() )
+  const { data: appointments, error, isLoading } = useSWR('/citas', fetcher)
 
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>

@@ -12,7 +12,6 @@ const VetCitas = () => {
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>Error...</p>;
 
-  console.log(Citas);
   return (
     <>
       <section className="mx-auto w-4/5 flex flex-col">
