@@ -3,13 +3,11 @@ import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library.js
 import { z, ZodError } from "zod"
 
 const diagnosticoModelo = z.object({
-    fecha: z.date().default(new Date()),
     descripcion: z.string().min(1),
     recomendaciones: z.string().min(1),
     idCita: z.number().min(1)
 })
 const diagnosticoModeloUpdate = z.object({
-    fecha: z.date().default(new Date()).optional(),
     descripcion: z.string().min(1).optional(),
     recomendaciones: z.string().min(1).optional(),
 })
@@ -18,8 +16,6 @@ const prisma = new PrismaClient()
 
 const agregarDiagnostico = async (req, res) => {
     try {
-
-        req.body.fecha = new Date(req.body.fecha)
 
         const diagnosticoValidado = diagnosticoModelo.parse(req.body);
         
@@ -96,7 +92,7 @@ const editarDiagnostico = async (req, res) => {
         const diagnosticoCreado = await prisma.diagnostico.update({
             data: diagnosticoValidado,
             where:{
-                id
+                id: parseInt(id)
             }
         })
 
@@ -115,8 +111,8 @@ const eliminarDiagnostico = async (req, res) => {
     try {
         const {id} = req.params;
         await prisma.diagnostico.delete({
-            where: {
-                id
+            where:{
+                id: parseInt(id)
             }
         })
         return res.status(200).json({

@@ -68,7 +68,7 @@ const Appointment = ({ data }) => {
               </h4>
             </div>
             <div className='flex w-full justify-start gap-4 items-center'>
-              <p className='px-3 py-1 bg-[#a3afb8] rounded-lg font-medium text-white'>Canino</p>
+              <p className='px-3 py-1 bg-[#a3afb8] rounded-lg font-medium text-white'>{data.mascota.especie}</p>
               <p className={'text-white px-3 py-1 font-medium rounded-lg ' + filterEstados(data.estado).bg}>{filterEstados(data.estado).name}</p>
             </div>
 
@@ -77,7 +77,7 @@ const Appointment = ({ data }) => {
             <p className='text-2xl font-bold text-[#303030]'>{data.mascota.nombre}</p>
             <div className='flex w-full justify-between items-center mt-4'>
               <p className='opacity-60 '>Age - {data.mascota.edad} meses</p>
-              {data.estado !== 'pendiente' && <p className='opacity-60 '>Date - {data.fecha.split("T")[0]}</p>}
+              {data.estado !== 'pendiente' && <p className='opacity-60 '>Date - {data.fecha.split('T')[0]}</p>}
 
               {data.estado === 'finalizada' && (
                 <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 cursor-pointer' onClick={() => navigate(`/appointments/diagnostic/${data.id}`)}>
@@ -107,7 +107,7 @@ export const CitasContainer = () => {
   const { data, error, isLoading } = useSWR('/citas', fetcher, {
     refreshInterval: 3000
   })
-  
+
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
   const appointments = data.data

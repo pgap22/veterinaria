@@ -7,6 +7,7 @@ import { authUser } from '../api/auth'
 import { useAuth } from '../store/auth'
 import { shallow } from 'zustand/shallow'
 import { PATHS_DUENO, PATHS_SECRETARY, PATHS_VET } from '../constants/routes'
+import { usePets } from '../store/usePet'
 export const Login = () => {
   return (
     <>
@@ -46,6 +47,7 @@ const Form = () => {
   const [error, setError] = useState(false)
 
   const setUser = useAuth((state) => state.setUser, shallow)
+  const setPets = usePets((state) => state.setPets, shallow)
 
   const navigate = useNavigate()
 
@@ -58,7 +60,11 @@ const Form = () => {
 
       setUser(data)
 
-      if (data.role === 'dueno') navigate(PATHS_DUENO[0].path)
+      if (data.role === 'dueno') {
+        setPets(data.mascota)
+        return navigate(PATHS_DUENO[0].path)
+      }
+      
       if (data.role === 'secretaria') navigate(PATHS_SECRETARY[0].path)
       if (data.role === 'veterinario') navigate(PATHS_VET[0].path)
     },

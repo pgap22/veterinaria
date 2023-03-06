@@ -18,6 +18,7 @@ import { DiagnosticContainer } from './components/Containers/Diagnostic'
 import { ManageDiagnostics } from './components/Containers/ManageDiagnostics.jsx'
 
 import { createBrowserRouter } from 'react-router-dom'
+import VetCitas from './components/Containers/VetCitas.jsx'
 
 export const router = createBrowserRouter([
   {
@@ -77,6 +78,15 @@ export const router = createBrowserRouter([
       <ProtectedRouteVet>
         <Header paths={PATHS_VET} />
         <VetContainer />
+      </ProtectedRouteVet>
+    )
+  },
+  {
+    path: '/vet/diagnostico',
+    element: (
+      <ProtectedRouteVet>
+        <Header paths={PATHS_VET} />
+        <VetCitas />
       </ProtectedRouteVet>
     )
   },

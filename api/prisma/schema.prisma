@@ -18,7 +18,7 @@ model cita {
   idSecretaria  Int?
   idDueno       Int
 
-  mascota     mascota       @relation(fields: [idMascota], references: [id], map: "Cita_idMascota_fkey")
+  mascota     mascota       @relation(fields: [idMascota], references: [id], map: "Cita_idMascota_fkey", onDelete: Cascade, onUpdate: Cascade)
   secretaria  secretaria?   @relation(fields: [idSecretaria], references: [id], map: "Cita_idSecretaria_fkey")
   veterinario veterinario?  @relation(fields: [idVeterinario], references: [id], map: "Cita_idVeterinario_fkey")
   dueno       dueno         @relation(fields: [idDueno], references: [id])
@@ -33,12 +33,11 @@ model cita {
 
 model diagnostico {
   id              Int         @id @default(autoincrement())
-  fecha           DateTime
   descripcion     String
   recomendaciones String
   idCita          Int
   idVeterinario   Int
-  cita            cita        @relation(fields: [idCita], references: [id], map: "Diagnostico_idCita_fkey")
+  cita            cita        @relation(fields: [idCita], references: [id], map: "Diagnostico_idCita_fkey", onDelete: Cascade, onUpdate: Cascade)
   veterinario     veterinario @relation(fields: [idVeterinario], references: [id], map: "Diagnostico_idVeterinario_fkey")
 
   @@index([idCita], map: "Diagnostico_idCita_fkey")
@@ -79,7 +78,7 @@ model pago {
   monto      Float
   idDueno    Int
   idCita     Int      @unique(map: "Pago_idCita_key")
-  cita       cita     @relation(fields: [idCita], references: [id], map: "Pago_idCita_fkey")
+  cita       cita     @relation(fields: [idCita], references: [id], map: "Pago_idCita_fkey", onDelete: Cascade, onUpdate: Cascade)
   dueno      dueno    @relation(fields: [idDueno], references: [id], map: "Pago_idDueno_fkey")
 
   @@index([idDueno], map: "Pago_idDueno_fkey")

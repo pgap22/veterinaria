@@ -27,6 +27,10 @@ export const PATHS_VET = [
   {
     page: 'Manage appointments',
     path: '/vet'
+  },
+  {
+    page: 'Ver diagnosticos',
+    path: '/vet/diagnostico'
   }
 ]
 

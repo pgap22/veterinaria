@@ -17,7 +17,6 @@ const deletePet = async (id) => {
     const { data } = await axiosClient.delete(`/mascotas/${id}`, configHeaders)
     return data
   } catch (error) {
-    console.log(error)
     throw new Error('Error deleting pet')
   }
 }

@@ -8,7 +8,6 @@ import { mutate } from 'swr'
 import axiosClient from '../../config/axiosClient'
 
 const updateData = async (petUpdate, id) => {
-  // console.log(petUpdate)
   const token = window.localStorage.getItem('token')
   const configHeaders = {
     headers: {

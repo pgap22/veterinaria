@@ -69,6 +69,9 @@ const buscarUsuarioPorCredenciales = async (req, res) => {
         email: credenciales.email,
         password: credenciales.password,
       },
+      include:{
+        mascota: true
+      }
     });
 
     //Buscando en la tabla secretaria
@@ -78,6 +81,7 @@ const buscarUsuarioPorCredenciales = async (req, res) => {
           email: credenciales.email,
           password: credenciales.password,
         },
+
       });
     }
     //Buscando en la tabla veterinario
@@ -138,6 +142,9 @@ const obtenerPerfilPorToken = async (req, res) => {
           email: credenciales.email,
           id: credenciales.id,
         },
+        include:{
+          mascota: true
+        }
       });
       //Buscando en la tabla secretaria
       if (!usuarioEncontrado) {

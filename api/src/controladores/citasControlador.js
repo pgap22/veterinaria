@@ -54,11 +54,11 @@ const solicitarCita = async (req, res) => {
 };
 const confirmarCita = async (req, res) => {
   try {
-    const { id } = req.params
+    const { id } = req.params;
 
     const isUpdated = await prisma.cita.updateMany({
       data: {
-        estado: 'activo'
+        estado: "activo",
       },
       where: {
         AND: [
@@ -66,54 +66,71 @@ const confirmarCita = async (req, res) => {
             id: parseInt(id),
           },
           {
-            idDueno: req.usuario.id
+            idDueno: req.usuario.id,
           },
           {
-            estado: 'esperandoConfirmacion'
-          }
-        ]
-      }
-    })
+            estado: "esperandoConfirmacion",
+          },
+        ],
+      },
+    });
 
     if (!isUpdated.count) {
       return res.status(200).json({
-        message: "Esa cita no se ha encontrado o ya esta confirmada"
-      })
+        message: "Esa cita no se ha encontrado o ya esta confirmada",
+      });
     }
 
-    const citaConfirmada = await prisma.cita.findFirst({ where: { id: parseInt(id) } })
+    const citaConfirmada = await prisma.cita.findFirst({
+      where: { id: parseInt(id) },
+    });
 
     return res.status(200).json(citaConfirmada);
-
   } catch (error) {
     console.log(error);
     return res.status(200).json(error);
   }
-}
-const obtenerCitasUsuarios = async (req, res) => {
+};
+
+
+const obtenerCita = async (req, res) => {
   try {
-    const usuarioID = req.usuario.id;
+    const { id } = req.params;
 
-    const citas = await prisma.cita.findMany({
+    const cita = await prisma.cita.findFirst({
       where: {
-        idDueno: usuarioID
+        id: parseInt(id),
+        OR: [{ idDueno: req.usuario.id }, { idVeterinario: req.usuario.id }],
       },
-      include: {
-        diagnostico: true,
-        mascota: true,
-        pago: true,
-        veterinario: true
+      include:{
+        diagnostico:true,
       }
-    })
+    });
 
-    return res.status(200).json(citas)
+    return res.status(200).json(cita);
   } catch (error) {
     console.log(error);
-    return res.status(400).json({
-      message: "Hubo un error con la obtencion de citas"
-    })
+    return res.status(400).json(error);
   }
-}
+};
+const obtenerCitas = async (req, res) => {
+  try {
+    const cita = await prisma.cita.findMany({
+      where: {
+        OR: [{ idDueno: req.usuario.id }, { idVeterinario: req.usuario.id }],
+      },
+      include:{
+        mascota: true,
+        diagnostico: true,
+      }
+    });
+
+    return res.status(200).json(cita);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json(error);
+  }
+};
 
 
 //Secretario
@@ -123,10 +140,10 @@ const obtenerCitasPendientes = async (req, res) => {
       where: {
         estado: "pendiente",
       },
-      include:{
+      include: {
         mascota: true,
         dueno: true,
-      }
+      },
     });
 
     return res.status(200).json(citasPendientes);
@@ -147,19 +164,21 @@ const aceptarCita = async (req, res) => {
 
     const detallesCita = detallesCitaModel.parse(req.body);
 
-    const existeVeterinario = await prisma.veterinario.findFirst({ where: { id: detallesCita.idVeterinario } })
+    const existeVeterinario = await prisma.veterinario.findFirst({
+      where: { id: detallesCita.idVeterinario },
+    });
 
     if (!existeVeterinario) {
       return res.status(400).json({
-        message: "El veterinario no existe"
-      })
+        message: "El veterinario no existe",
+      });
     }
 
     const citaActivada = await prisma.cita.update({
       data: {
         estado: "activo",
         idSecretaria: req.usuario.id,
-        ...detallesCita
+        ...detallesCita,
       },
       where: {
         id: parseInt(id),
@@ -175,7 +194,7 @@ const aceptarCita = async (req, res) => {
 
     if (error instanceof PrismaClientKnownRequestError) {
       return res.status(400).json({
-        message: "La cita no existe o es invalida"
+        message: "La cita no existe o es invalida",
       });
     }
 
@@ -184,62 +203,60 @@ const aceptarCita = async (req, res) => {
   }
 };
 
-
-
 //Veterinarios
 const obtenerCitasVeterinaria = async (req, res) => {
   try {
     const citas = await prisma.cita.findMany({
       where: {
         idVeterinario: req.usuario.id,
-        estado: "activo"
+        estado: "activo",
       },
       include: {
         mascota: true,
         dueno: true,
         secretaria: true,
         pago: true,
-        diagnostico: true
-      }
-    })
+        diagnostico: true,
+      },
+    });
     return res.status(200).json(citas);
   } catch (error) {
     console.log(error);
     return res.status(400).json(error);
   }
-}
+};
 const finalizarCita = async (req, res) => {
   try {
     const { id } = req.params;
 
     const citaFinalizada = await prisma.cita.update({
       data: {
-        estado: 'pagoPendiente'
+        estado: "pagoPendiente",
       },
       where: {
-        id: parseInt(id)
-      }
-    })
+        id: parseInt(id),
+      },
+    });
 
-    return res.status(200).json(citaFinalizada)
-
+    return res.status(200).json(citaFinalizada);
   } catch (error) {
     console.log(error);
     if (error instanceof PrismaClientKnownRequestError) {
       return res.status(400).json({
-        message: "La cita no existe o es invalida"
+        message: "La cita no existe o es invalida",
       });
     }
     return res.status(400).json(error);
   }
-}
+};
 
 export {
   solicitarCita,
   obtenerCitasPendientes,
   aceptarCita,
   confirmarCita,
-  obtenerCitasUsuarios,
   obtenerCitasVeterinaria,
-  finalizarCita
+  finalizarCita,
+  obtenerCita,
+  obtenerCitas
 };

@@ -1,55 +1,103 @@
-import { PetCard } from '../Cards/PetCard'
-import { VetCard } from '../Cards/VetCard'
-import { IoReturnUpBack } from 'react-icons/io5'
-import { Link } from 'react-router-dom'
-import { PATHS_DUENO } from '../../constants/routes'
+import { PetCard } from "../Cards/PetCard";
+import { VetCard } from "../Cards/VetCard";
+import { Link, useParams } from "react-router-dom";
+import { PATHS_DUENO } from "../../constants/routes";
+import { IoReturnUpBack } from "react-icons/io5";
+import { getDiagnosticAxios, obtenerCitasUsuario } from "../../api/vet";
+import useSWR from "swr"
+import { useEffect, useState } from "react";
 
 export const DiagnosticContainer = () => {
   return (
     <>
-      <div className='w-4/5 mx-auto flex mt-5 gap-20 mb-8 '>
-        <div className='flex items-start flex-col gap-4'>
-          <div className='flex justify-between w-full'>
-            <h1 className='text-4xl font-bold uppercase'>Diagnostico</h1>
+      <div className="w-4/5 mx-auto flex mt-5 gap-20 mb-8 ">
+        <div className="w-full flex items-start flex-col gap-4">
+          <div className="flex justify-between w-full">
+            <h1 className="text-4xl font-bold uppercase">Diagnostico</h1>
             <Link to={PATHS_DUENO[1].path}>
               <IoReturnUpBack size={40} />
             </Link>
           </div>
-
-          <div className='flex flex-col gap-5'>
-            <div className='flex flex-col gap-2'>
-              <h1 className='text-2xl font-normal uppercase'>Descripcion</h1>
-              <p className='text-base text-justify'>
-                Después de examinar a su mascota, el veterinario ha determinado que tiene una fractura en una de sus piernas. La fractura probablemente se debió a un traumatismo agudo, como una caída o un accidente.
-              </p>
-            </div>
-            <div className='flex flex-col gap-2'>
-              <h1 className='text-2xl font-normal uppercase'>Recomendaciones</h1>
-              <p className='text-base text-justify'>
-                El veterinario puede recomendar un tratamiento conservador o una cirugía, dependiendo de la gravedad y ubicación de la fractura. Si se requiere una cirugía, su mascota será anestesiada y se colocará una placa y tornillos para estabilizar el hueso fracturado. Después de la cirugía, su mascota necesitará un período de recuperación que incluirá inmovilización y limitación de la actividad física. <br /> <br />
-                Si se recomienda un tratamiento conservador, se puede colocar una férula o un yeso en la pierna fracturada para mantenerla en su lugar mientras se cura. También se pueden recetar analgésicos para el dolor y antiinflamatorios para reducir la inflamación. Es importante limitar la actividad física de su mascota mientras se cura la fractura.
-              </p>
-            </div>
-
-          </div>
+          {/*DIV 1*/}
+          <ManageDiagnostics />
         </div>
 
-        <div className='flex flex-row sm:flex-col justify-between gap-2'>
+        <div className=" flex flex-row sm:flex-col justify-between gap-2">
           <VetCard />
           <PetCard
-            page={false} pet={{
+            page={false}
+            pet={{
               id: 19,
-              nombre: 'Manchitas',
-              especie: 'Canina',
-              raza: 'Chigugua',
+              nombre: "Manchitas",
+              especie: "Canina",
+              raza: "Chigugua",
               genero: false,
-              edad: '18',
-              id_dueno: 3
+              edad: "18",
+              id_dueno: 3,
             }}
           />
         </div>
-
       </div>
     </>
-  )
-}
+  );
+};
+
+const ManageDiagnostics = () => {
+  const { id } = useParams();
+  const [diagnostics, setDiagnostics] = useState([]);
+  const { data, error, isLoading } = useSWR(
+    "/citas",
+    async () => await obtenerCitasUsuario(id),
+    { revalidateOnMount: true }
+  );
+  useEffect(() => {
+    if (typeof data !== "undefined") {
+      const citaDiagnostico = data
+      console.log(citaDiagnostico)
+      setDiagnostics(citaDiagnostico.diagnostico)
+    }
+  }, [isLoading]);
+
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <div>loading...</div>;
+
+  return (
+    <>
+      <div className="w-full mx-auto mt-5 flex flex-col gap-5">
+        {!diagnostics.length ? (
+          <>
+            <h1>NO HAY DIAGNOSTICOS</h1>
+          </>
+        ) : (
+          diagnostics.map((diagnostic, i) => {
+            return <Card key={i} data={diagnostic} />;
+          })
+        )}
+      </div>
+    </>
+  );
+};
+
+const Card = ({ data }) => {
+  return (
+    <>
+      <div className="w-full flex flex-col p-4 h-auto shadow-lg gap-5 rounded-lg">
+        <div className="flex flex-col gap-5">
+          <div>
+            <p className=" text-xl font-bold">Descricpion:</p>
+            <p className="text-base font-normal text-justify">
+              {data.descripcion}
+            </p>
+          </div>
+
+          <div>
+            <p className=" text-xl font-bold">Recomendaciones:</p>
+            <p className="text-base font-normal text-justify">
+              {data.recomendaciones}
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};

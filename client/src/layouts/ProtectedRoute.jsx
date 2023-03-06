@@ -9,11 +9,10 @@ export default function ProtectedRoute ({ children }) {
 
 
   useEffect(() => {
-    if (!user.id || user.role !== 'dueno') {
+    if (user.role !== 'dueno') {
       return navigate('/')
     } 
   }, [])
-  
 
   return (
     <>

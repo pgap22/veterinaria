@@ -36,13 +36,11 @@ export const obtenerVeterinarios = async ()=>{
 }
 
 export const asignarCitaVeterinario = async (data)=> {
-  console.log(data);
   const payload = {
     idVeterinario: parseInt(data.idVeterinario),
     fecha: new Date(data.fecha)
   }
 
-  console.log(payload);
 
   return axiosClient.put(`/citas/aceptar/${data.id}`,payload,configHeaders)
 }

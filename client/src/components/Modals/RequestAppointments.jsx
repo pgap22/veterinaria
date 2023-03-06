@@ -25,7 +25,6 @@ export const RequestAppointments = () => {
   const { register, handleSubmit } = useForm()
   const pets = usePets((state) => state.pets, shallow)
   const navigate = useNavigate()
-  // console.log(pets)
   const succesSubmit = (appointment) => {
     appointment.idMascota = parseInt(appointment.idMascota)
     const idDueno = { idDueno: pets.filter((pet) => pet.id === appointment.idMascota)[0].id_dueno }
