@@ -15,7 +15,6 @@ const app = express()
 app.use(express.json());
 app.use(cors())
 
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJqdWFuQGp1YW4uY29tIiwiaWF0IjoxNjc3Nzg1NDQwfQ.bUIbfkcl3Qe1PsEERtJIxSGSHPDR8Rlop8vkt6QrRjk
 app.get("/",(req,res)=>{
     
     res.send("Servidor API Veterinaria");

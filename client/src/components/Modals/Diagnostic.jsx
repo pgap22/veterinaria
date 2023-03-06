@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { IoIosClose } from 'react-icons/io'
-import { FiArrowRight } from 'react-icons/fi'
 
-export const ResolveDiagnotic = () => {
+export const AddDiagnostic = () => {
   // To edit i will need to verify the edit prop to get the pet by id which is a prop to
   const [showModal, setShowModal] = useState(false)
   return (
     <>
-      <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500' onClick={() => setShowModal(true)}>
-        <FiArrowRight size={25} className='stroke-[#7b7b7b] group-hover:stroke-white' />
-      </div>
+
+      <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='button' onClick={() => setShowModal(true)}>
+        Add diagnostic
+      </button>
       {showModal
         ? (
           <>
@@ -24,7 +24,7 @@ export const ResolveDiagnotic = () => {
                   <div className='flex items-center justify-between p-5 border-b border-solid border-slate-200 rounded-t gap-5'>
 
                     <h3 className='text-3xl font-semibold'>
-                      Resolve the appointment
+                      Add diagnostic to the appointment
                     </h3>
                     <IoIosClose className='fill-black cursor-pointer' size={40} onClick={() => setShowModal(false)} />
                   </div>

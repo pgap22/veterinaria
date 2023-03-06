@@ -3,43 +3,91 @@ import { RequestAppointments } from '../Modals/RequestAppointments.jsx'
 import { FiArrowRight } from 'react-icons/fi'
 import { useNavigate } from 'react-router-dom'
 
-const xd = 'activa'
-const STYLE_BG_TAGS = {
-  pendiente: 'bg-orange-600 ',
-  activa: 'bg-green-400',
-  finalizada: 'bg-gray-400'
+import axiosClient from '../../config/axiosClient.js'
+import useSWR from 'swr'
+
+import { useAppointment } from '../../store/useCita.js'
+import { shallow } from 'zustand/shallow'
+import { useState } from 'react'
+
+import { ModalPagoCita } from '../Modals/ModalPagoCita.jsx'
+
+const estadosCitas = [
+  {
+    id: 'pendiente',
+    bg: 'bg-orange-600',
+    name: 'Pendientes'
+  },
+  {
+    id: 'activo',
+    bg: 'bg-green-600',
+    name: 'Activas'
+  },
+  {
+    id: 'pagoPendiente',
+    bg: 'bg-yellow-600',
+    name: 'Pago pendientes'
+  },
+  {
+    id: 'finalizada',
+    bg: 'bg-blue-600',
+    name: 'Finalizadas'
+  }
+]
+
+const filterEstados = (estado) => {
+  return estadosCitas.filter((x) => {
+    return x.id === estado
+  })[0]
 }
 
-const Appointment = ({ i }) => {
+const STYLES_BUTTONS_STATE = 'font-medium cursor-pointer px-3 py-2 border rounded-xl hover:text-white text-black hover:bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500'
+const STYLES_BUTTONS_STATE_ACTIVE = 'font-medium pointer-events-none px-3 py-2 border rounded-xl text-white text-black bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500'
+
+const fetcher = async () => {
+  const token = window.localStorage.getItem('token')
+
+  const configHeaders = {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  }
+  return axiosClient.get('/citas', configHeaders)
+}
+
+const Appointment = ({ data }) => {
   const navigate = useNavigate()
   return (
     <div className='container'>
       <div className='flex flex-wrap'>
-        <div className='w-full cursor-pointer' onClick={() => navigate(`/appointments/diagnostic/${i}`)}>
+        <div className='w-full'>
           <div className='flex-col p-5 flex gap-3 md:px-7 xl:px-6 rounded-[20px] bg-white border mb-3 cursor-pointer'>
             <div className='flex items-center justify-start'>
               <h4 className='font-bold text-2xl text-dark'>
-                Mi perro tiene cancer
+                {data.motivo}
               </h4>
             </div>
             <div className='flex w-full justify-start gap-4 items-center'>
               <p className='px-3 py-1 bg-[#a3afb8] rounded-lg font-medium text-white'>Canino</p>
-              <p className={'text-white px-3 py-1 font-medium rounded-lg capitalize ' + STYLE_BG_TAGS[xd]}>{xd}</p>
+              <p className={'text-white px-3 py-1 font-medium rounded-lg ' + filterEstados(data.estado).bg}>{filterEstados(data.estado).name}</p>
             </div>
 
-            <p className='text-body-color'>
-              Mi perro se encuentra muy mal de salud recientemente le hemos diagnosticado cancer terminal, necesitamos dormirlo lo mas pronto
-            </p>
           </div>
           <div className='flex flex-col gap-2'>
-            <p className='text-2xl font-bold text-[#303030]'>Labrador Retriever</p>
-            <div className='flex w-full justify-between items-center'>
-              <p className='opacity-60 '>Age - 18 meses</p>
-              <p className='opacity-60 '>Date - 25/03/2023</p>
+            <p className='text-2xl font-bold text-[#303030]'>{data.mascota.nombre}</p>
+            <div className='flex w-full justify-between items-center mt-4'>
+              <p className='opacity-60 '>Age - {data.mascota.edad} meses</p>
+              {data.estado !== 'pendiente' && <p className='opacity-60 '>Date - 20/30/36 {data.fecha}</p>}
 
-              <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500'>
-                <FiArrowRight size={25} className='stroke-[#7b7b7b] group-hover:stroke-white' onClick={() => navigate(`/appointments/diagnostic/${i}`)} />
-              </div>
+              {data.estado === 'finalizada' && (
+                <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 cursor-pointer' onClick={() => navigate(`/appointments/diagnostic/${data.id}`)}>
+                  <FiArrowRight size={25} className='stroke-[#7b7b7b] group-hover:stroke-white' />
+                </div>)}
+
+              {data.estado === 'pagoPendiente' && (
+                <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500 cursor-pointer'>
+                  <ModalPagoCita id={data.id} />
+                </div>)}
 
             </div>
 
@@ -52,25 +100,46 @@ const Appointment = ({ i }) => {
 }
 
 export const CitasContainer = () => {
+  const setAppointment = useAppointment((state) => state.setAppointment, shallow)
+
+  const [estado, setEstado] = useState('pendiente')
+
+  const { data, error, isLoading } = useSWR('/citas', fetcher)
+  if (error) return <div>failed to load</div>
+  if (isLoading) return <div>loading...</div>
+  const appointments = data.data
+  setAppointment(appointments)
+
+  const appointmentsFilterByState = () => {
+    return appointments.filter((x) => {
+      return x.estado === estado
+    })
+  }
+
+  const appointmentMapped = (data) => {
+    if (!data.length) return <h1>No hay citas</h1>
+    return data.map((appointment, i) => {
+      return <Appointment key={i} data={appointment} />
+    })
+  }
+
   return (
     <section className='mx-auto w-4/5 flex flex-col'>
       <div className=' w-full flex justify-start items-start'>
         <h2 className='font-bold text-3xl my-6'>Resumen de todas las citas agendadas</h2>
         {/* <RequestAppointments /> */}
       </div>
-      <div className='flex flex-row justify-between items-center w-full pb-8'>
+      <div className='flex flex-col justify-between items-center w-full pb-8 sm:flex-row'>
         <div className='flex w-auto flex-col justify-center items-center gap-6 mb-3 sm:flex-row'>
-          <div className='font-medium cursor-pointer px-3 py-2 rounded-xl text-white bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 tracking-wider'>Pendientes</div>
-          <div className='font-medium cursor-pointer px-3 py-2 border rounded-xl text-black'>Activas</div>
-          <div className='font-medium cursor-pointer px-3 py-2 border rounded-xl text-black'>Finalizadas</div>
+          {estadosCitas.map((x, i) => {
+            return <div key={i} onClick={() => setEstado(x.id)} className={x.id === estado ? STYLES_BUTTONS_STATE_ACTIVE : STYLES_BUTTONS_STATE}>{x.name}</div>
+          })}
         </div>
         <RequestAppointments />
       </div>
 
       <div className=' gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full h-auto mb-5'>
-        <Appointment i={1} />
-        <Appointment i={1} />
-        <Appointment i={1} />
+        {!appointments.length ? (<><h1>NO HAY CITAS</h1></>) : appointmentMapped(appointmentsFilterByState())}
 
       </div>
 

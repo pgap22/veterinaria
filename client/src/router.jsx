@@ -2,6 +2,8 @@ import { PATHS_DUENO, PATHS_VET, PATHS_SECRETARY } from './constants/routes.js'
 
 import ProtectedRoute from './layouts/ProtectedRoute'
 import UnProtectedRoute from './layouts/UnprotectedRoute'
+import ProtectedRouteSecy from './layouts/ProtectedRouteSecy'
+import ProtectedRouteVet from './layouts/ProtectedRouteVet'
 
 import { Login } from './pages/login'
 import { Index } from './pages/index'
@@ -10,9 +12,9 @@ import { Header } from './components/Header/Header'
 
 import { CitasContainer } from './components/Containers/Appointments'
 import { PetsContainer } from './components/Containers/Pets'
-import { VetContainer } from './components/Containers/Vet.jsx'
-import { SecyContainer } from './components/Containers/Secy.jsx'
-import { DiagnosticContainer } from './components/Containers/Diagnostic.jsx'
+import { VetContainer } from './components/Containers/Vet'
+import { SecyContainer } from './components/Containers/Secy'
+import { DiagnosticContainer } from './components/Containers/Diagnostic'
 
 import { createBrowserRouter } from 'react-router-dom'
 
@@ -71,19 +73,19 @@ export const router = createBrowserRouter([
   {
     path: '/vet',
     element: (
-      <>
+      <ProtectedRouteVet>
         <Header paths={PATHS_VET} />
         <VetContainer />
-      </>
+      </ProtectedRouteVet>
     )
   },
   {
     path: '/secy',
     element: (
-      <>
+      <ProtectedRouteSecy>
         <Header paths={PATHS_SECRETARY} />
         <SecyContainer />
-      </>
+      </ProtectedRouteSecy>
     )
   }
 

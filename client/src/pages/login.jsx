@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { authUser } from '../api/auth'
 import { useAuth } from '../store/auth'
 import { shallow } from 'zustand/shallow'
-import { PATHS_DUENO } from '../constants/routes'
+import { PATHS_DUENO, PATHS_SECRETARY, PATHS_VET } from '../constants/routes'
 export const Login = () => {
   return (
     <>
@@ -58,7 +58,9 @@ const Form = () => {
 
       setUser(data)
 
-      navigate(PATHS_DUENO[0].path)
+      if (data.role === 'dueno') navigate(PATHS_DUENO[0].path)
+      if (data.role === 'secretaria') navigate(PATHS_SECRETARY[0].path)
+      if (data.role === 'veterinario') navigate(PATHS_VET[0].path)
     },
 
     onError: () => {

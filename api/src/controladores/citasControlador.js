@@ -149,7 +149,7 @@ const aceptarCita = async (req, res) => {
 
     const citaActivada = await prisma.cita.update({
       data: {
-        estado: "esperandoConfirmacion",
+        estado: "activo",
         idSecretaria: req.usuario.id,
         ...detallesCita
       },
@@ -208,20 +208,19 @@ const finalizarCita = async (req, res) => {
         estado: 'pagoPendiente'
       },
       where: {
-        id
+        id: parseInt(id)
       }
     })
 
     return res.status(200).json(citaFinalizada)
 
   } catch (error) {
+    console.log(error);
     if (error instanceof PrismaClientKnownRequestError) {
       return res.status(400).json({
         message: "La cita no existe o es invalida"
       });
     }
-
-    console.log(error);
     return res.status(400).json(error);
   }
 }

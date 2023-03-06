@@ -6,13 +6,14 @@ const prisma = new PrismaClient();
 const pagarCita = async (req, res) => {
     try {
         const { id } = req.params
+        
 
         const citaPagada = await prisma.cita.update({
             data: {
                 estado: 'finalizada'
             },
             where: {
-                id
+                id:parseInt(id)
             }
         })
 

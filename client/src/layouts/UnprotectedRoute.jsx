@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 import { useAuth } from '../store/auth'
-import { PATHS_DUENO } from '../constants/routes'
+import { PATHS_DUENO, PATHS_SECRETARY, PATHS_VET } from '../constants/routes'
 
 export default function UnProtectedRoute ({ children }) {
   const user = useAuth((state) => state.user, shallow)
@@ -12,7 +12,9 @@ export default function UnProtectedRoute ({ children }) {
 
   // Si hay usuario regresa a home
   if (user.id) {
-    navigate(PATHS_DUENO[0].path)
+    if (user.role === 'dueno') navigate(PATHS_DUENO[0].path)
+    if (user.role === 'secretaria') navigate(PATHS_SECRETARY[0].path)
+    if (user.role === 'veterinario') navigate(PATHS_VET[0].path)
     return
   }
 

@@ -19,7 +19,7 @@ const updateData = async (petUpdate, id) => {
   return data
 }
 
-export const ModalEditPets = () => {
+export const ModalEditPets = ({ id }) => {
   const setOpenEdit = usePetEdit((state) => state.setOpen, shallow)
   const selectedPet = usePets((state) => state.selectedPet, shallow)
   const { register, handleSubmit } = useForm({
@@ -34,7 +34,6 @@ export const ModalEditPets = () => {
 
   const successSubmit = async (data) => {
     mutate('/mascotas', async () => {
-      console.log(data)
       data.genero = data.genero === 'true'
       data.edad = parseInt(data.edad)
       await updateData(data, selectedPet.id)

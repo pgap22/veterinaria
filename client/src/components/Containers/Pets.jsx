@@ -2,31 +2,21 @@
 import { AddPetsForm } from '../Modals/AddPetsForm'
 import { ModalEditPets } from '../Modals/ModalEditPets'
 import { ModalDeleteItem } from '../Modals/ModalDeleteItem'
-import axiosClient from '../../config/axiosClient'
 import useSWR from 'swr'
+import { fetcherPets } from '../../api/pets'
 
 import { PetCard } from '../Cards/PetCard'
 
 import { usePetEdit, usePetDelete, usePets } from '../../store/usePet'
 import { shallow } from 'zustand/shallow'
 
-const fetcher = async () => {
-  const token = window.localStorage.getItem('token')
-
-  const configHeaders = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }
-  return axiosClient.get('/mascotas', configHeaders)
-}
-
 export const PetsContainer = () => {
   const isOpenEdit = usePetEdit((state) => state.Open, shallow)
   const isOpenDelete = usePetDelete((state) => state.Open, shallow)
   const setPets = usePets((state) => state.setPets, shallow)
+  // const pets = usePets((state) => state.pets, shallow)
 
-  const { data, error, isLoading } = useSWR('/mascotas', fetcher)
+  const { data, error, isLoading } = useSWR('/mascotas', fetcherPets)
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
   const mascotas = data.data
@@ -37,8 +27,6 @@ export const PetsContainer = () => {
       return <PetCard key={i} pet={pet} page />
     })
   }
-
-  console.log(mascotas)
 
   return (
     <section className='mx-auto max-w-screen-xl px-4 '>

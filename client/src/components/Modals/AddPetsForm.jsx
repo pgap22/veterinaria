@@ -34,7 +34,7 @@ export const AddPetsForm = () => {
   return (
     <>
       <button
-        className='block rounded-lg bg-indigo-600 px-5 py-3 text-sm font-medium text-white transition hover:bg-indigo-700 focus:outline-none focus:ring'
+        className='font-medium cursor-pointer px-3 py-2 border rounded-xl hover:text-white text-black hover:bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500'
         type='button'
         onClick={() => setShowModal(true)}
       >

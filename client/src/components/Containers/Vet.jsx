@@ -1,12 +1,10 @@
-import { ResolveDiagnotic } from '../Modals/Diagnostic'
-const xd = 'activa'
-const STYLE_BG_TAGS = {
-  pendiente: 'bg-orange-600 ',
-  activa: 'bg-green-400',
-  finalizada: 'bg-gray-400'
-}
+import { AddDiagnostic } from '../Modals/Diagnostic'
+import { ResolveDiagnostic } from '../Modals/resolveDiagnostic'
+import { FiArrowRight } from 'react-icons/fi'
+import { getActiveAppointement } from '../../api/vet'
+import useSWR from 'swr'
 
-const Appointment = () => {
+const Appointment = ({ data }) => {
   return (
     <div className='container'>
       <div className='flex flex-wrap'>
@@ -14,25 +12,30 @@ const Appointment = () => {
           <div className='flex-col p-5 flex gap-3 md:px-7 xl:px-6 rounded-[20px] bg-white border mb-3 cursor-pointer'>
             <div className='flex items-center justify-start'>
               <h4 className='font-bold text-2xl text-dark'>
-                Mi perro tiene cancer
+                {data.motivo}
               </h4>
             </div>
-            <div className='flex w-full justify-start gap-4 items-center'>
-              <p className='px-3 py-1 bg-[#a3afb8] rounded-lg font-medium text-white'>Canino</p>
-              <p className={'text-white px-3 py-1 font-medium rounded-lg capitalize ' + STYLE_BG_TAGS[xd]}>{xd}</p>
+            <div className='flex w-full justify-start gap-4 items-start flex-col '>
+              <div className='flex gap-2'>
+                <p className='px-3 py-1 bg-[#a3afb8] rounded-lg font-medium text-white'>{data.mascota.especie}</p>
+                <p className='text-white px-3 py-1 font-medium rounded-lg capitalize bg-green-400'>Activa</p>
+              </div>
+              <div className='flex gap-2 h-auto'>
+                <ResolveDiagnostic id={data.id} />
+                <AddDiagnostic />
+              </div>
+
             </div>
 
-            <p className='text-body-color'>
-              Mi perro se encuentra muy mal de salud recientemente le hemos diagnosticado cancer terminal, necesitamos dormirlo lo mas pronto
-            </p>
           </div>
           <div className='flex flex-col gap-2'>
-            <p className='text-2xl font-bold text-[#303030]'>Labrador Retriever</p>
+            <p className='text-2xl font-bold text-[#303030]'>{data.mascota.raza}</p>
             <div className='flex w-full justify-between items-center'>
-              <p className='opacity-60 '>Age - 18 meses</p>
+              <p className='opacity-60 '>Age - {data.mascota.edad}meses</p>
               <p className='opacity-60 '>Date - 25/03/2023</p>
-              <ResolveDiagnotic />
-
+              <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500'>
+                <FiArrowRight size={25} className='stroke-[#7b7b7b] group-hover:stroke-white' />
+              </div>
             </div>
 
           </div>
@@ -44,6 +47,17 @@ const Appointment = () => {
 }
 
 export const VetContainer = () => {
+  const { data, error, isLoading } = useSWR('/citas/activos', getActiveAppointement)
+  if (error) return <div>failed to load</div>
+  if (isLoading) return <div>loading...</div>
+  const appointments = data.data
+
+  const prinAppointment = () => {
+    return appointments.map((appointment, i) => {
+      return <Appointment key={i} data={appointment} />
+    })
+  }
+
   return (
     <section className='mx-auto w-4/5 flex flex-col'>
       <div className=' w-full flex justify-start items-start'>
@@ -51,9 +65,7 @@ export const VetContainer = () => {
       </div>
 
       <div className=' gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full h-auto mb-5'>
-        <Appointment />
-        <Appointment />
-        <Appointment />
+        {!appointments.length ? (<><h1>NO HAY CITAS ACTIVAS</h1></>) : prinAppointment()}
 
       </div>
 
