@@ -104,7 +104,10 @@ export const CitasContainer = () => {
 
   const [estado, setEstado] = useState('pendiente')
 
-  const { data, error, isLoading } = useSWR('/citas', fetcher)
+  const { data, error, isLoading } = useSWR('/citas', fetcher, {
+    refreshInterval: 3000
+  })
+  
   if (error) return <div>failed to load</div>
   if (isLoading) return <div>loading...</div>
   const appointments = data.data

@@ -22,10 +22,9 @@ export const ModalPagoCita = ({ id }) => {
   const [showModal, setShowModal] = useState(false)
   const { register, handleSubmit, formState: { errors } } = useForm()
 
-  const successSubmit = () => {
-    mutate(`/pagos/pagar/${id}`, async () => {
+  const successSubmit = async () => {
+    mutate(`/citas`, async () => {
       await payAppointment(id)
-      setShowModal(false)
     })
   }
 

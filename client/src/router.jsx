@@ -15,6 +15,7 @@ import { PetsContainer } from './components/Containers/Pets'
 import { VetContainer } from './components/Containers/Vet'
 import { SecyContainer } from './components/Containers/Secy'
 import { DiagnosticContainer } from './components/Containers/Diagnostic'
+import { ManageDiagnostics } from './components/Containers/ManageDiagnostics.jsx'
 
 import { createBrowserRouter } from 'react-router-dom'
 
@@ -76,6 +77,15 @@ export const router = createBrowserRouter([
       <ProtectedRouteVet>
         <Header paths={PATHS_VET} />
         <VetContainer />
+      </ProtectedRouteVet>
+    )
+  },
+  {
+    path: '/vet/diagnostic/:id',
+    element: (
+      <ProtectedRouteVet>
+        <Header paths={PATHS_VET} />
+        <ManageDiagnostics />
       </ProtectedRouteVet>
     )
   },

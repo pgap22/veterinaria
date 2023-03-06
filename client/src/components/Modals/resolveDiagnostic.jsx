@@ -7,7 +7,7 @@ export const ResolveDiagnostic = ({ id }) => {
   const [showModal, setShowModal] = useState(false)
 
   const handleClick = async () => {
-    mutate(`/citas/finalizar/${id}`, async () => {
+    mutate('/citas/activos', async () => {
       await finishAppointement(id)
       setShowModal(false)
     })

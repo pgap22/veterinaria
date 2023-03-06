@@ -18,8 +18,11 @@ const prisma = new PrismaClient()
 
 const agregarDiagnostico = async (req, res) => {
     try {
-        const diagnosticoValidado = diagnosticoModelo.parse(req.body);
 
+        req.body.fecha = new Date(req.body.fecha)
+
+        const diagnosticoValidado = diagnosticoModelo.parse(req.body);
+        
         //Añadir el veterinario que hizo los diagnosticos
         diagnosticoValidado.idVeterinario = req.usuario.id
 

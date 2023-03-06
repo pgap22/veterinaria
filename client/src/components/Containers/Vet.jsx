@@ -3,6 +3,7 @@ import { ResolveDiagnostic } from '../Modals/resolveDiagnostic'
 import { FiArrowRight } from 'react-icons/fi'
 import { getActiveAppointement } from '../../api/vet'
 import useSWR from 'swr'
+import { Link } from 'react-router-dom'
 
 const Appointment = ({ data }) => {
   return (
@@ -22,7 +23,7 @@ const Appointment = ({ data }) => {
               </div>
               <div className='flex gap-2 h-auto'>
                 <ResolveDiagnostic id={data.id} />
-                <AddDiagnostic />
+                <AddDiagnostic id={data.id} />
               </div>
 
             </div>
@@ -33,9 +34,11 @@ const Appointment = ({ data }) => {
             <div className='flex w-full justify-between items-center'>
               <p className='opacity-60 '>Age - {data.mascota.edad}meses</p>
               <p className='opacity-60 '>Date - 25/03/2023</p>
-              <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500'>
-                <FiArrowRight size={25} className='stroke-[#7b7b7b] group-hover:stroke-white' />
-              </div>
+              <Link to={`/vet/diagnostic/${data.id}`}>
+                <div className='bg-gray-200 p-2 rounded-full group hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:to-indigo-500'>
+                  <FiArrowRight size={25} className='stroke-[#7b7b7b] group-hover:stroke-white' />
+                </div>
+              </Link>
             </div>
 
           </div>
@@ -52,7 +55,7 @@ export const VetContainer = () => {
   if (isLoading) return <div>loading...</div>
   const appointments = data.data
 
-  const prinAppointment = () => {
+  const PrinAppointment = () => {
     return appointments.map((appointment, i) => {
       return <Appointment key={i} data={appointment} />
     })
@@ -65,7 +68,7 @@ export const VetContainer = () => {
       </div>
 
       <div className=' gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full h-auto mb-5'>
-        {!appointments.length ? (<><h1>NO HAY CITAS ACTIVAS</h1></>) : prinAppointment()}
+        {!appointments.length ? (<><h1>NO HAY CITAS ACTIVAS</h1></>) : <PrinAppointment />}
 
       </div>
 
