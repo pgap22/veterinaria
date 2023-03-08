@@ -37,29 +37,29 @@ export const AddDiagnosticAxios = async (data) => {
 
 export const editDiagnosticAxios = async (data) => {
   const token = window.localStorage.getItem("token");
-
   const configHeaders = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
-  return axiosClient.put(`/diagnosticos/${data.idCita}`, data, configHeaders);
+  return await axiosClient
+    .put(`/diagnosticos/${data.idCita}`, data, configHeaders)
+    .then(({ data }) => data);
 };
 
 export const deleteDiagnosticAxios = async (data) => {
   const token = window.localStorage.getItem("token");
-
+  console.log(data);
   const configHeaders = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
-  return axiosClient.delete(`/diagnosticos/${data}`, configHeaders);
+  return await axiosClient.delete("/diagnosticos/" + data, configHeaders);
 };
 
 export const getDiagnosticAxios = async (data) => {
-
   const token = window.localStorage.getItem("token");
 
   const configHeaders = {
@@ -67,9 +67,9 @@ export const getDiagnosticAxios = async (data) => {
       Authorization: `Bearer ${token}`,
     },
   };
-   ;
-
-  return axiosClient.get("/citas/" + data[1], configHeaders).then(({data}) => data);
+  return await axiosClient
+    .get("/citas/" + data, configHeaders)
+    .then(({ data }) => data);
 };
 
 export const obtenerCitas = async () => {
@@ -80,10 +80,12 @@ export const obtenerCitas = async () => {
       Authorization: `Bearer ${token}`,
     },
   };
-  return axiosClient.get("/citas/veterinario", configHeaders).then(({data})=> data);
+  return axiosClient
+    .get("/citas/veterinario", configHeaders)
+    .then(({ data }) => data);
 };
 
-export const obtenerCitasUsuario = async (id) => {
+export const obtenerCitasUsuario = async (data) => {
   const token = window.localStorage.getItem("token");
 
   const configHeaders = {
@@ -91,6 +93,8 @@ export const obtenerCitasUsuario = async (id) => {
       Authorization: `Bearer ${token}`,
     },
   };
- 
-  return axiosClient.get("/citas/usuario/" + id, configHeaders).then(({data})=> data);
+
+  return axiosClient
+    .get("/citas/usuario/" + data[1], configHeaders)
+    .then(({ data }) => data);
 };

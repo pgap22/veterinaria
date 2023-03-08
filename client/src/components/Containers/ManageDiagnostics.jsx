@@ -1,6 +1,7 @@
 // import { useParams } from 'react-router-dom'
 import { useForm } from "react-hook-form";
-import useSWR, { mutate } from "swr";
+// import useSWR, { mutate } from "swr";
+import { useQuery } from "react-query";
 import {
   editDiagnosticAxios,
   deleteDiagnosticAxios,
@@ -10,28 +11,30 @@ import {
 import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { useParams } from "react-router-dom";
+import useDiagnostico from "../../store/useDiagnostico";
 
 export const ManageDiagnostics = () => {
   const { id } = useParams();
-  const {
-    data: cita,
-    error,
-    isLoading,
-  } = useSWR(["/diagnosticos",id], getDiagnosticAxios);
+  const setDiagnostico = useDiagnostico((state) => state.setDiagnostico);
+  const diagnostico = useDiagnostico((state) => state.diagnostico);
 
-
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
+  useEffect(() => {
+    const loadDiagnostico = async () => {
+      const cita = await getDiagnosticAxios(id);
+      setDiagnostico(cita.diagnostico);
+    };
+    loadDiagnostico();
+  }, []);
 
   return (
     <>
       <div className="w-4/5 mx-auto mt-5 flex flex-col gap-5">
-        {!cita.diagnostico.length ? (
+        {!diagnostico.length ? (
           <>
             <h1>NO HAY DIAGNOSTICOS</h1>
           </>
         ) : (
-          cita.diagnostico.map((diagnostic, i) => {
+          diagnostico.map((diagnostic, i) => {
             return <Card key={i} data={diagnostic} />;
           })
         )}
@@ -71,10 +74,13 @@ const Card = ({ data }) => {
 const ModalDeleteDiagnostic = ({ id }) => {
   const [showModal, setShowModal] = useState(false);
 
+  const setDiagnostico = useDiagnostico((state) => state.setDiagnostico);
+  const diagnostico = useDiagnostico((state) => state.diagnostico);
+
   const deletePetHandleClick = async () => {
-    mutate("/diagnosticos", async () => {
-      await deleteDiagnosticAxios(id);
-    });
+    await deleteDiagnosticAxios(id);
+    setDiagnostico(diagnostico.filter((d) => d.id !== id));
+    setShowModal(false);
   };
 
   return (
@@ -143,14 +149,19 @@ const ModalEditDiagnostic = ({ id, data }) => {
       recomendaciones: data.recomendaciones,
     },
   });
+  const setDiagnostico = useDiagnostico((state) => state.setDiagnostico);
+  const diagnostico = useDiagnostico((state) => state.diagnostico);
+
+
 
   const sucessSubmit = async (data) => {
-    mutate("/diagnosticos", async () => {
-      await editDiagnosticAxios({
-        ...data,
-        idCita: id,
-      });
+    const updatedCita = await editDiagnosticAxios({
+      ...data,
+      idCita: id,
     });
+    console.log(updatedCita);
+    setDiagnostico(diagnostico.map(d => d.id == id ? updatedCita : d))
+    setShowModal(false)
   };
 
   return (
