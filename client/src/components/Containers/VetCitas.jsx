@@ -1,16 +1,16 @@
 import { FiArrowRight } from "react-icons/fi";
+import { useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
-import useSWR from "swr";
 import { obtenerCitas } from "../../api/vet";
 const VetCitas = () => {
   const {
     data: Citas,
     isLoading,
-    error,
-  } = useSWR("/citas/veterinarios", obtenerCitas);
+    isError,
+  } = useQuery("/citas/veterinarios", obtenerCitas)
 
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error...</p>;
+  if (isError) return <p>Error...</p>;
 
   return (
     <>

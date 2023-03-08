@@ -7,13 +7,17 @@ import {
   getDiagnosticAxios,
 } from "../../api/vet";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoIosClose } from "react-icons/io";
 import { useParams } from "react-router-dom";
 
 export const ManageDiagnostics = () => {
   const { id } = useParams();
-  const { data: cita, error, isLoading } = useSWR("/diagnosticos", async () => await getDiagnosticAxios(id));
+  const {
+    data: cita,
+    error,
+    isLoading,
+  } = useSWR(["/diagnosticos",id], getDiagnosticAxios);
 
 
   if (error) return <div>failed to load</div>;
@@ -136,8 +140,8 @@ const ModalEditDiagnostic = ({ id, data }) => {
   const { register, handleSubmit } = useForm({
     defaultValues: {
       descripcion: data.descripcion,
-      recomendaciones: data.recomendaciones
-    }
+      recomendaciones: data.recomendaciones,
+    },
   });
 
   const sucessSubmit = async (data) => {

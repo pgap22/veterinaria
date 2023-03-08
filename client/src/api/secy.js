@@ -1,13 +1,7 @@
 import axios from 'axios'
 import axiosClient from '../config/axiosClient'
 
-const token = window.localStorage.getItem('token')
 
-const configHeaders = {
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
-}
 
 export const fetcherAppointmentsPendientes = async () => {
   const token = window.localStorage.getItem('token')
@@ -17,8 +11,7 @@ export const fetcherAppointmentsPendientes = async () => {
       Authorization: `Bearer ${token}`
     }
   }
-  const { data } = await axiosClient.get('/citas/pendientes', configHeaders)
-  return data
+  return axiosClient.get('/citas/pendientes', configHeaders).then(({data})=>data)
 }
 
 export const fetcherPetSecy = (id) => {
@@ -33,11 +26,25 @@ export const fetcherPetSecy = (id) => {
 }
 
 export const obtenerVeterinarios = async () => {
+  const token = window.localStorage.getItem('token')
+
+const configHeaders = {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+}
   const {data} = await axiosClient.get('/veterinarios', configHeaders)
   return data;
 }
 
 export const asignarCitaVeterinario = async (data) => {
+  const token = window.localStorage.getItem('token')
+
+const configHeaders = {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }
+}
   const payload = {
     idVeterinario: parseInt(data.idVeterinario),
     fecha: new Date(data.fecha)

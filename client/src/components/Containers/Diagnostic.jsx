@@ -8,7 +8,7 @@ import useSWR from "swr"
 
 export const DiagnosticContainer = () => {
   const { id } = useParams();
-  const { data: citas, error, isLoading } = useSWR("/citas", async () => await obtenerCitasUsuario(id));
+  const { data: citas, error, isLoading } = useSWR("/citas-diagnostic", () => obtenerCitasUsuario(id));
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;

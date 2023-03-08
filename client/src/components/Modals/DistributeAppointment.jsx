@@ -7,6 +7,7 @@ import { asignarCitaVeterinario, obtenerVeterinarios } from '../../api/secy';
 
 
 export const DistributeAppointment = ({ id }) => {
+  const [showModal, setShowModal] = useState(false)
 
   const { register, handleSubmit } = useForm();
   
@@ -20,9 +21,9 @@ export const DistributeAppointment = ({ id }) => {
         id
       })
     })
+    setShowModal(false);
   }
 
-  const [showModal, setShowModal] = useState(false)
 
   return (
     <>

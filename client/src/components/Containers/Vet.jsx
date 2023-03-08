@@ -8,7 +8,6 @@ import useSWR, { mutate } from "swr";
 import { Link } from "react-router-dom";
 import { useCitaVet } from "../../store/useCitaVet";
 import { shallow } from "zustand/shallow";
-import { useEffect } from "react";
 
 export const VetContainer = () => {
 
@@ -208,7 +207,7 @@ const ModalCreateDiagnostico = () => {
   const { register, handleSubmit } = useForm();
 
   const sucessSubmit =  (data) => {
-    mutate('/diagnosticos', async () => {
+    mutate('/add', async () => {
       await AddDiagnosticAxios({
         ...data,
         idCita: cita.id

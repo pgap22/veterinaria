@@ -92,7 +92,6 @@ const confirmarCita = async (req, res) => {
   }
 };
 
-
 const obtenerCita = async (req, res) => {
   try {
     const { id } = req.params;
@@ -100,11 +99,23 @@ const obtenerCita = async (req, res) => {
     const cita = await prisma.cita.findFirst({
       where: {
         id: parseInt(id),
-        OR: [{ idDueno: req.usuario.id }, { idVeterinario: req.usuario.id }],
+        OR: [
+          {
+            dueno: {
+              id: req.usuario.id,
+              email: req.usuario.email,
+            },
+          },
+          {
+            veterinario:{
+              role: req.usuario.role
+            }
+          }
+        ],
       },
-      include:{
-        diagnostico:true,
-      }
+      include: {
+        diagnostico: true,
+      },
     });
 
     return res.status(200).json(cita);
@@ -115,14 +126,28 @@ const obtenerCita = async (req, res) => {
 };
 const obtenerCitas = async (req, res) => {
   try {
+    console.log(req.usuario.role);
+
     const cita = await prisma.cita.findMany({
       where: {
-        OR: [{ idDueno: req.usuario.id }, { idVeterinario: req.usuario.id }],
+        OR: [
+          {
+            dueno: {
+              id: req.usuario.id,
+              email: req.usuario.email,
+            },
+          },
+          {
+            veterinario:{
+              role: req.usuario.role
+            }
+          }
+        ],
       },
-      include:{
+      include: {
         mascota: true,
         diagnostico: true,
-      }
+      },
     });
 
     return res.status(200).json(cita);
@@ -131,7 +156,6 @@ const obtenerCitas = async (req, res) => {
     return res.status(400).json(error);
   }
 };
-
 
 //Secretario
 const obtenerCitasPendientes = async (req, res) => {
@@ -258,5 +282,5 @@ export {
   obtenerCitasVeterinaria,
   finalizarCita,
   obtenerCita,
-  obtenerCitas
+  obtenerCitas,
 };

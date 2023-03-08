@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { shallow } from 'zustand/shallow'
 import { useAuth } from '../../store/auth'
 import { usePets } from '../../store/usePet'
+import { useQueryClient } from 'react-query'
 
 function classNames (...classes) {
   return classes.filter(Boolean).join(' ')
@@ -16,8 +17,11 @@ export const DropdownComponentHeader = () => {
   const setSelectedPet = usePets((state) => state.setSelectedPet, shallow)
 
   const setUser = useAuth((state) => state.setUser, shallow)
-  const logout = () => {
+  const queryClient = useQueryClient();
+
+  const logout = async () => {
     window.localStorage.removeItem('token')
+    await queryClient.resetQueries();
     setUser({})
     setPets([])
     setSelectedPet({})
