@@ -159,7 +159,6 @@ const ModalEditDiagnostic = ({ id, data }) => {
       ...data,
       idCita: id,
     });
-    console.log(updatedCita);
     setDiagnostico(diagnostico.map(d => d.id == id ? updatedCita : d))
     setShowModal(false)
   };

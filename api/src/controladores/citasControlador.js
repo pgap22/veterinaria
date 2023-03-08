@@ -126,7 +126,6 @@ const obtenerCita = async (req, res) => {
 };
 const obtenerCitas = async (req, res) => {
   try {
-    console.log(req.usuario.role);
 
     const cita = await prisma.cita.findMany({
       where: {

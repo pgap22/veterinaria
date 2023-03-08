@@ -24,7 +24,6 @@ export const Index = () => {
   const user = useAuth((state) => state.user, shallow);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  console.log(user);
 
   return (
     <div className="isolate bg-white">

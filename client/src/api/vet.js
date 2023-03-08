@@ -49,7 +49,6 @@ export const editDiagnosticAxios = async (data) => {
 
 export const deleteDiagnosticAxios = async (data) => {
   const token = window.localStorage.getItem("token");
-  console.log(data);
   const configHeaders = {
     headers: {
       Authorization: `Bearer ${token}`,

@@ -29,7 +29,6 @@ const autentificacionSecretaria = async (req, res, next) => {
       });
 
       if(usuarioEncontradoPorId){
-        console.log(usuarioEncontradoPorId)
         req.usuario = usuarioEncontradoPorId
         //Borrar el atributo password (antes se usaba el select en prisma pero ahora prefiero usar este)
         delete req.usuario.password
