@@ -1,7 +1,10 @@
 import { useState } from 'react'
+
 import { FiArrowRight } from 'react-icons/fi'
 import { IoIosClose } from 'react-icons/io'
+import { TailSpin } from 'react-loader-spinner'
 import { useForm } from 'react-hook-form'
+
 import { mutate } from 'swr'
 import axiosClient from '../../config/axiosClient'
 
@@ -19,11 +22,13 @@ const payAppointment = async (id) => {
 }
 
 export const ModalPagoCita = ({ id }) => {
+  const [isSubmit, setShowSubmit] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const { register, handleSubmit, formState: { errors } } = useForm()
 
   const successSubmit = async () => {
-    mutate(`/citas`, async () => {
+    setShowSubmit(true)
+    mutate('/citas', async () => {
       await payAppointment(id)
     })
   }
@@ -85,9 +90,24 @@ export const ModalPagoCita = ({ id }) => {
 
                       </div>
                       <div className='flex items-center gap-4'>
-                        <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
-                          Pagar
-                        </button>
+                        {isSubmit
+                          ? (
+                            <TailSpin
+                              height='40'
+                              width='40'
+                              color='#3B0DF6'
+                              ariaLabel='tail-spin-loading'
+                              radius='5'
+                              wrapperStyle={{}}
+                              wrapperClass=''
+                              visible
+                            />
+                            )
+                          : (
+                            <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
+                              Pagar
+                            </button>
+                            )}
                       </div>
                     </form>
                   </div>

@@ -115,6 +115,8 @@ const obtenerCita = async (req, res) => {
       },
       include: {
         diagnostico: true,
+        mascota:true,
+        veterinario:true
       },
     });
 

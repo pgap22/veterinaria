@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { IoIosClose } from 'react-icons/io'
 
 import { usePetEdit, usePets } from '../../store/usePet'
@@ -6,6 +7,8 @@ import { useForm } from 'react-hook-form'
 import { mutate } from 'swr'
 
 import axiosClient from '../../config/axiosClient'
+
+import { TailSpin } from 'react-loader-spinner'
 
 const updateData = async (petUpdate, id) => {
   const token = window.localStorage.getItem('token')
@@ -21,7 +24,8 @@ const updateData = async (petUpdate, id) => {
 export const ModalEditPets = ({ id }) => {
   const setOpenEdit = usePetEdit((state) => state.setOpen, shallow)
   const selectedPet = usePets((state) => state.selectedPet, shallow)
-  
+
+  const [isSubmit, setShowSubmit] = useState(false)
 
   const mascotas = usePets((state) => state.pets, shallow)
   const setPets = usePets((state) => state.setPets, shallow)
@@ -37,11 +41,13 @@ export const ModalEditPets = ({ id }) => {
   })
 
   const successSubmit = async (data) => {
+    setShowSubmit(true
+    )
     mutate('/mascotas', async () => {
       data.genero = data.genero === 'true'
       data.edad = parseInt(data.edad)
       const updatedPet = await updateData(data, selectedPet.id)
-      setPets(mascotas.map(mascota => mascota.id == selectedPet.id ? updatedPet : mascota))
+      setPets(mascotas.map(mascota => mascota.id === selectedPet.id ? updatedPet : mascota))
       setOpenEdit(false)
     })
   }
@@ -101,13 +107,28 @@ export const ModalEditPets = ({ id }) => {
                   <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='username'>
                     Age:
                   </label>
-                  <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='age' type='text' placeholder='8' {...register('edad', { required: true })} />
+                  <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='age' type='number' placeholder='8' {...register('edad', { required: true })} />
                 </div>
 
                 <div className='flex items-center gap-4'>
-                  <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
-                    Add
-                  </button>
+                  {isSubmit
+                    ? (
+                      <TailSpin
+                        height='40'
+                        width='40'
+                        color='#3B0DF6'
+                        ariaLabel='tail-spin-loading'
+                        radius='5'
+                        wrapperStyle={{}}
+                        wrapperClass=''
+                        visible
+                      />
+                      )
+                    : (
+                      <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
+                        Edit
+                      </button>
+                      )}
                 </div>
               </form>
             </div>

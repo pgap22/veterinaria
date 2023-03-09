@@ -9,6 +9,8 @@ import { mutate } from 'swr'
 import { usePets } from '../../store/usePet'
 import { shallow } from 'zustand/shallow'
 
+import { TailSpin } from 'react-loader-spinner'
+
 const addAppointment = async (newAppointment) => {
   const token = window.localStorage.getItem('token')
   const configHeaders = {
@@ -22,10 +24,13 @@ const addAppointment = async (newAppointment) => {
 
 export const RequestAppointments = () => {
   const [showModal, setShowModal] = useState(false)
+  const [isSubmit, setShowSubmit] = useState(false)
+
   const { register, handleSubmit } = useForm()
   const pets = usePets((state) => state.pets, shallow)
   const navigate = useNavigate()
   const succesSubmit = (appointment) => {
+    setShowSubmit(true)
     appointment.idMascota = parseInt(appointment.idMascota)
     const idDueno = { idDueno: pets.filter((pet) => pet.id === appointment.idMascota)[0].id_dueno }
 
@@ -135,22 +140,26 @@ export const RequestAppointments = () => {
                               <input className='appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-gray-300 ' id='name' type='text' placeholder='Aristides' {...register('motivo', { required: true })} />
                             </div>
 
-                            <div className='mb-4'>
-                              <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='username'>
-                                Appoinment's date
-                              </label>
-                              {/* <div className='relative max-w-sm'>
-                                <div className='absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none'>
-                                  <svg aria-hidden='true' className='w-5 h-5 text-gray-500 dark:text-gray-400' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'><path fillRule='evenodd' d='M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z' clipRule='evenodd' /></svg>
-                                </div>
-                                <input type='date' className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5' placeholder='Select date' {...register('fecha', { required: true })} />
-                              </div> */}
-                            </div>
-
                             <div className='flex items-center gap-4'>
-                              <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
-                                Add
-                              </button>
+                              {isSubmit
+                                ? (
+                                  <TailSpin
+                                    height='40'
+                                    width='40'
+                                    color='#3B0DF6'
+                                    ariaLabel='tail-spin-loading'
+                                    radius='5'
+                                    wrapperStyle={{}}
+                                    wrapperClass=''
+                                    visible
+                                  />
+                                  )
+                                : (
+                                  <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
+                                    Add
+                                  </button>
+                                  )}
+
                               <button className=' hover:text-blue-800 text-blue-500 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' onClick={() => setShowModal(false)}>
                                 Close
                               </button>

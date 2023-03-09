@@ -1,9 +1,13 @@
+import { useState } from 'react'
 import { IoIosClose } from 'react-icons/io'
 import axiosClient from '../../config/axiosClient'
 
 import { usePetDelete, usePets } from '../../store/usePet'
 import { shallow } from 'zustand/shallow'
 import { mutate } from 'swr'
+
+import { TailSpin } from 'react-loader-spinner'
+
 // import { mutate } from 'swr'
 
 const deletePet = async (id) => {
@@ -22,13 +26,15 @@ const deletePet = async (id) => {
 }
 
 export const ModalDeleteItem = () => {
+  const [isSubmit, setShowSubmit] = useState(false)
+
   const setOpenDelete = usePetDelete((state) => state.setOpen, shallow)
   const selectedPet = usePets((state) => state.selectedPet, shallow)
-  
   const mascotas = usePets((state) => state.pets, shallow)
   const setPets = usePets((state) => state.setPets, shallow)
 
   const deletePetHandleClick = async () => {
+    setShowSubmit(true)
     mutate('/mascotas', async () => {
       await deletePet(selectedPet.id)
       setPets(mascotas.filter(mascota => mascota.id !== selectedPet.id))
@@ -67,13 +73,29 @@ export const ModalDeleteItem = () => {
               >
                 Close
               </button>
-              <button
-                className='bg-red-500  text-white hover:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150'
-                type='button'
-                onClick={() => deletePetHandleClick()}
-              >
-                Eliminar
-              </button>
+              {isSubmit
+                ? (
+                  <TailSpin
+                    height='40'
+                    width='40'
+                    color='#3B0DF6'
+                    ariaLabel='tail-spin-loading'
+                    radius='5'
+                    wrapperStyle={{}}
+                    wrapperClass=''
+                    visible
+                  />
+                  )
+                : (
+                  <button
+                    className='bg-red-500  text-white hover:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150'
+                    type='button'
+                    onClick={() => deletePetHandleClick()}
+                  >
+                    Eliminar
+                  </button>
+                  )}
+
             </div>
           </div>
         </div>

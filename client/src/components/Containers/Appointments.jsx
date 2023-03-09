@@ -112,7 +112,7 @@ export const CitasContainer = () => {
     })
   }
 
-  const appointmentMapped = (data) => {
+  const AppointmentMapped = ({ data }) => {
     if (!data.length) return <h1>No hay citas</h1>
     return data.map((appointment, i) => {
       return <Appointment key={i} data={appointment} />
@@ -135,8 +135,7 @@ export const CitasContainer = () => {
       </div>
 
       <div className=' gap-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full h-auto mb-5'>
-        {!appointments.length ? (<><h1>NO HAY CITAS</h1></>) : appointmentMapped(appointmentsFilterByState())}
-
+        {!appointments.length ? (<><h1>NO HAY CITAS</h1></>) : <AppointmentMapped data={appointmentsFilterByState()} />}
       </div>
 
     </section>

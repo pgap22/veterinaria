@@ -1,6 +1,6 @@
 import { RxAvatar } from 'react-icons/rx'
 
-export const VetCard = () => {
+export const VetCard = ({ vet }) => {
   return (
     <>
       <div className='flex flex-col justify-center items-center h-auto'>
@@ -14,9 +14,9 @@ export const VetCard = () => {
           </div>
           <div className='mt-11 flex flex-col items-center'>
             <h4 className='text-xl font-bold text-black'>
-              Juan Carlos
+              {vet.nombre}
             </h4>
-            <p className='text-base font-normal text-gray-600'>Speciality - Dogs</p>
+            <p className='text-base font-normal text-gray-600'>Speciality - {vet.especialidad}</p>
           </div>
         </div>
       </div>

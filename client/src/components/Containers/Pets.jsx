@@ -2,8 +2,6 @@
 import { AddPetsForm } from '../Modals/AddPetsForm'
 import { ModalEditPets } from '../Modals/ModalEditPets'
 import { ModalDeleteItem } from '../Modals/ModalDeleteItem'
-import useSWR from 'swr'
-import { fetcherPets } from '../../api/pets'
 
 import { PetCard } from '../Cards/PetCard'
 
@@ -14,7 +12,6 @@ export const PetsContainer = () => {
   const isOpenEdit = usePetEdit((state) => state.Open, shallow)
   const isOpenDelete = usePetDelete((state) => state.Open, shallow)
   const mascotas = usePets((state) => state.pets, shallow)
-
 
   const PrintPets = () => {
     return mascotas.map((pet, i) => {

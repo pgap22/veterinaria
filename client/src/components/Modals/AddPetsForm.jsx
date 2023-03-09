@@ -7,6 +7,9 @@ import axiosClient from '../../config/axiosClient'
 import { mutate } from 'swr'
 import { usePets } from '../../store/usePet'
 import { shallow } from 'zustand/shallow'
+// import { useFormSubmitAdd } from '../../store/useFormsLoaders'
+
+import { TailSpin } from 'react-loader-spinner'
 
 const addPet = async (newPet) => {
   const token = window.localStorage.getItem('token')
@@ -21,21 +24,32 @@ const addPet = async (newPet) => {
 
 export const AddPetsForm = () => {
   const [showModal, setShowModal] = useState(false)
-  const { register, handleSubmit } = useForm()
+  const [isSubmit, setShowSubmit] = useState(false)
+  const { register, handleSubmit, reset } = useForm()
 
   const mascotas = usePets((state) => state.pets, shallow)
   const setPets = usePets((state) => state.setPets, shallow)
 
+  // if (isSubmit) setShowSubmit(false)
+
+  // const isSubmit = useFormSubmitAdd((state) => state.isSubmit, shallow)
+  // const setShowSubmit = useFormSubmitAdd((state) => state.setShowSubmit, shallow)
+
   const successSubmit = async (data) => {
+    setShowSubmit(true)
     data.genero = data.genero === 'true'
     data.edad = parseInt(data.edad)
 
     mutate('/mascotas', async () => {
       const mascotanNew = await addPet(data)
       setPets([...mascotas, mascotanNew])
+      reset()
       setShowModal(false)
+      setShowSubmit(false)
     })
   }
+
+  console.log('rendered ', isSubmit)
 
   return (
     <>
@@ -102,13 +116,29 @@ export const AddPetsForm = () => {
                         <label className='block text-gray-700 text-sm font-bold mb-2' htmlFor='username'>
                           Age:
                         </label>
-                        <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='age' type='text' placeholder='8' {...register('edad', { required: true })} />
+                        <input className='border-gray-300  appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline' id='age' type='number' placeholder='8' {...register('edad', { required: true })} />
                       </div>
 
                       <div className='flex items-center gap-4'>
-                        <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
-                          Add
-                        </button>
+                        {isSubmit
+                          ? (
+                            <TailSpin
+                              height='40'
+                              width='40'
+                              color='#3B0DF6'
+                              ariaLabel='tail-spin-loading'
+                              radius='5'
+                              wrapperStyle={{}}
+                              wrapperClass=''
+                              visible
+                            />
+                            )
+                          : (
+                            <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline' type='submit'>
+                              Add
+                            </button>
+                            )}
+
                       </div>
                     </form>
                   </div>
